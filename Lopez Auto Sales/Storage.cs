@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
-using System.Reflection;
 using System.Xml.Linq;
 
 namespace Lopez_Auto_Sales
@@ -23,7 +22,6 @@ namespace Lopez_Auto_Sales
         internal static List<SalesCar> SalesCars = new List<SalesCar>();
         internal static List<PaperInfo> Papers = new List<PaperInfo>();
         public const string CONNECTION = "Data Source = (LocalDB)\\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\\LopezData.mdf;Integrated Security = True; Connect Timeout = 30; MultipleActiveResultSets=True ";
-        const string LOG_PATH = "Log.txt";
 
         internal static void Init()
         {
@@ -92,20 +90,20 @@ namespace Lopez_Auto_Sales
                     decimal expected = (decimal)car["Expected"];
                     string color = (string)car["Color"];
                     DateTime boughtdate = (DateTime)car["BoughtDate"];
-                    int carId = (int)car["CarId"];
+                    int carID = (int)car["CarId"];
                     List<Payment> payments = new List<Payment>();
 
-                    foreach (DataRow payment in lopezData.PaymentTable.Select("CarId=" + carId))
+                    foreach (DataRow payment in lopezData.PaymentTable.Select("CarId=" + carID))
                     {
                         DateTime date = (DateTime)payment["Date"];
                         decimal amount = (decimal)payment["Amount"];
                         bool down = (bool)payment["Down"];
                         int paymentId = (int)payment["PaymentId"];
 
-                        payments.Add(new Payment(date, amount, down, carId, paymentId));
+                        payments.Add(new Payment(date, amount, down, carID, paymentId));
                     }
 
-                    cars.Add(new PaymentCar(year, make, model, vin, due, expected, color, boughtdate, payments, personId, carId));
+                    cars.Add(new PaymentCar(year, make, model, vin, due, expected, color, boughtdate, payments, personId, carID));
                 }
                 people.Add(new Person(name, phone, address, cars, personId));
             }
@@ -202,77 +200,77 @@ namespace Lopez_Auto_Sales
         #region PERSON
         internal static int AddPerson(string name, string phone, string full_Address)
         {
-            File.AppendAllText(LOG_PATH, String.Format("[{0}]:\t{1}\t{2}\r\n", DateTime.Now, MethodBase.GetCurrentMethod().Name.ToUpper(), name));
+            Logger.AddPerson(name, phone, full_Address);
             return (int)peopleAdapter.InsertQuery(name, full_Address, phone);
         }
         internal static void UpdatePerson(Person person, Person newPerson)
         {
-            File.AppendAllText(LOG_PATH, String.Format("[{0}]:\t{1}\t{2}\t{3}\r\n", DateTime.Now, MethodBase.GetCurrentMethod().Name.ToUpper(), person, newPerson));
+            Logger.UpdatePerson(person, newPerson);
             People[People.IndexOf(person)] = newPerson;
             peopleAdapter.Update(newPerson.Name, newPerson.Full_Address, newPerson.Phone, person.PersonID, person.Name, person.Full_Address, person.Phone);
         }
         internal static void RemovePerson(Person person)
         {
-            File.AppendAllText(LOG_PATH, String.Format("[{0}]:\t{1}\t{2}\r\n", DateTime.Now, MethodBase.GetCurrentMethod().Name.ToUpper(), person.Name));
+            Logger.RemovePerson(person);
             People.Remove(person);
             peopleAdapter.Delete(person.PersonID, person.Name, person.Full_Address, person.Phone);
         }
         #endregion
         #region SALESCARS
-        internal static void EditSalesCar(SalesCar car, SalesCar newcar)
+        internal static void EditSalesCar(SalesCar car, SalesCar newCar)
         {
-            salesCarAdapter.Update(newcar.VIN, newcar.Year, newcar.Make, newcar.Model, newcar.Color, newcar.Mileage, newcar.Price,
-                newcar.LowestPrice, newcar.ListDate, newcar.BoughtPrice, newcar.ExtraKey, newcar.Salvage,
+            Logger.EditSalesCar(car, newCar);
+            salesCarAdapter.Update(newCar.VIN, newCar.Year, newCar.Make, newCar.Model, newCar.Color, newCar.Mileage, newCar.Price,
+                newCar.LowestPrice, newCar.ListDate, newCar.BoughtPrice, newCar.ExtraKey, newCar.Salvage,
                 car.VIN, car.Year, car.Make, car.Model, car.Color, car.Mileage, car.Price,
                 car.LowestPrice, car.ListDate, car.BoughtPrice, car.ExtraKey, car.Salvage);
-            SalesCars[SalesCars.IndexOf(car)] = newcar;
-            File.AppendAllText(LOG_PATH, String.Format("[{0}]:\t{1}\t{2}\t{3}\r\n", DateTime.Now, MethodBase.GetCurrentMethod().Name.ToUpper(), car, newcar));
+            SalesCars[SalesCars.IndexOf(car)] = newCar;
         }
 
         internal static void RemoveSalesCar(SalesCar car)
         {
+            Logger.RemoveSalesCar(car);
             salesCarAdapter.Delete(car.VIN, car.Year, car.Make, car.Model, car.Color, car.Mileage, car.Price, car.LowestPrice, car.ListDate, car.BoughtPrice, car.ExtraKey, car.Salvage);
             SalesCars.Remove(car);
-            File.AppendAllText(LOG_PATH, String.Format("[{0}]:\t{1}\t{2}\t{3}\r\n", DateTime.Now, MethodBase.GetCurrentMethod().Name.ToUpper(), car.VIN, car));
         }
 
         internal static void AddSalesCar(SalesCar car)
         {
+            Logger.AddSalesCar(car);
             salesCarAdapter.Insert(car.VIN, car.Year, car.Make, car.Model, car.Color, car.Mileage, car.Price, car.LowestPrice, car.ListDate, car.BoughtPrice, car.ExtraKey, car.Salvage);
             SalesCars.Add(car);
-            File.AppendAllText(LOG_PATH, String.Format("[{0}]:\t{1}\t{2}\t{3}\r\n", DateTime.Now, MethodBase.GetCurrentMethod().Name.ToUpper(), car.VIN, car));
         }
         #endregion
         #region PAYMENTS
         internal static void RemovePayment(Payment payment, string reason)
         {
+            Logger.RemovePayment(payment, reason);
             paymentAdapter.Delete(payment.PaymentID, payment.CarID, payment.Date, payment.Amount, payment.Down);
             removedPaymentAdapter.Insert(payment.CarID, payment.Date, payment.Amount, payment.Down, reason);
-            File.AppendAllText(LOG_PATH, String.Format("[{0}]:\t{1}\t{2}\t{3}", DateTime.Now, MethodBase.GetCurrentMethod().Name.ToUpper(), payment, reason));
         }
 
         internal static void EditPayment(Payment payment, DateTime date, decimal amount, string reason)
         {
+            Logger.EditPayment(payment, date, amount, reason);
             paymentAdapter.Update(payment.CarID, date, amount, payment.Down, payment.PaymentID, payment.CarID, payment.Date, payment.Amount, payment.Down);
-            File.AppendAllText(LOG_PATH, String.Format("[{0}]:\t{1}\t{2}\t{3}", DateTime.Now, MethodBase.GetCurrentMethod().Name.ToUpper(), payment, reason));
         }
 
-        internal static int AddPayment(int carId, DateTime date, decimal amount, bool down)
+        internal static int AddPayment(int carID, DateTime date, decimal amount, bool down)
         {
-            File.AppendAllText(LOG_PATH, String.Format("[{0}]:\t{1}\t{2}\t{3}\r\n", DateTime.Now, MethodBase.GetCurrentMethod().Name.ToUpper(), carId, amount.ToString("C")));
-            return (int)paymentAdapter.InsertQuery(carId, date, amount, down);
+            Logger.AddPayment(carID, date, amount, down);
+            return (int)paymentAdapter.InsertQuery(carID, date, amount, down);
         }
         #endregion
         #region PAYMENTCAR
         internal static int AddPaymentCar(int year, string make, string model, string VIN, decimal due, decimal average, DateTime now, string color, int personID)
         {
-            File.AppendAllText(LOG_PATH, String.Format("[{0}]:\t{1}\t{2}\t{3}\r\n", DateTime.Now, MethodBase.GetCurrentMethod().Name.ToUpper(), VIN, personID));
+            Logger.AddPaymentCar(year, make, model, VIN, due, average, now, color, personID);
             return (int)paymentCarAdapter.InsertQuery(personID, year, make, model, VIN, due, color, average, now);
         }
 
         internal static void RemovePaymentCar(Person person, PaymentCar car)
         {
-            File.AppendAllText(LOG_PATH, String.Format("[{0}]:\t{1}\t{2}\t{3}\r\n", DateTime.Now, MethodBase.GetCurrentMethod().Name.ToUpper(), person, car));
+            Logger.RemovePaymentCar(person, car);
             People[People.IndexOf(person)].Cars.Remove(car);
             foreach(Payment p in car.Payments)
             {

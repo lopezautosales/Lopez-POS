@@ -22,6 +22,11 @@
             Value = value;
         }
 
+        public string Name
+        {
+            get { return Year.ToString() + ' ' + Make + ' ' + Model; }
+        }
+
         public override string ToString()
         {
             return Year.ToString() + ' ' + Make + ' ' + Model;
