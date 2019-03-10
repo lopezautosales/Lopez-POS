@@ -83,7 +83,6 @@ namespace Lopez_Auto_Sales
             return true;
         }
 
-
         private bool CheckTrade(out Car car)
         {
             car = null;
