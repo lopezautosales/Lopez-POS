@@ -1,8 +1,9 @@
 ﻿using Lopez_Auto_Sales.Cars;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.NetworkInformation;
-using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -21,31 +22,33 @@ namespace Lopez_Auto_Sales
 
         internal void Search_TextChanged(object sender, TextChangedEventArgs e)
         {
-            Thread th = new Thread(new ThreadStart(delegate ()
-            {
-                AccountsBox.Dispatcher.BeginInvoke(new Action(() =>
-                {
-                    DisplayResults(NameText.Text, CarText.Text);
-                }));
-            }));
-
-            th.SetApartmentState(ApartmentState.STA);
-            th.Start();
+             DisplayResults(NameText.Text, CarText.Text);
         }
 
         internal void DisplayResults(string nameQuery, string carQuery)
         {
-            AccountsBox.Items.Clear();
-           foreach (Person person in Storage.People)
+            List<Person> people = new List<Person>();
+
+            //Search in parallel
+            Parallel.ForEach(Storage.People, (Person person) =>
             {
                 if (!String.IsNullOrEmpty(nameQuery))
                     if (!person.Name.ToLower().Contains(nameQuery.ToLower()))
-                        continue;
+                        return;
 
                 if (!String.IsNullOrEmpty(carQuery))
                     if (person.Cars.FirstOrDefault(car => car.ToString().ToLower().Contains(carQuery.ToLower())) == null)
-                        continue;
+                        return;
 
+                lock (people)
+                {
+                    people.Add(person);
+                }
+            });
+
+            AccountsBox.Items.Clear();
+            foreach (Person person in people)
+            {
                 TreeView treeView = new TreeView();
                 TreeViewItem header = new TreeViewItem() { Header = person };
                 foreach (PaymentCar car in person.Cars)
@@ -64,13 +67,14 @@ namespace Lopez_Auto_Sales
             TreeViewItem item = sender as TreeViewItem;
             Person person = (Person)((TreeViewItem)item.Parent).Header;
             PaymentCar paymentCar = (PaymentCar)item.Header;
-            EntryWindow entryWindow = new EntryWindow(person, paymentCar) { Owner= this, Title = person.ToString() + ": " + paymentCar.ToString() };
+            //Owner property must be set
+            EntryWindow entryWindow = new EntryWindow(person, paymentCar) { Owner = this, Title = person.ToString() + ": " + paymentCar.ToString() };
             entryWindow.Show();
         }
 
         private void CarsButton_Click(object sender, RoutedEventArgs e)
         {
-            SalesCars salesCars = new SalesCars() { Owner = this };
+            SalesCars salesCars = new SalesCars();
             salesCars.Show();
         }
 
@@ -96,28 +100,26 @@ namespace Lopez_Auto_Sales
 
         private void SellCarButton_Click(object sender, RoutedEventArgs e)
         {
-            SellCarWindow carWindow = new SellCarWindow() { Owner = this };
+            SellCarWindow carWindow = new SellCarWindow();
             carWindow.Show();
         }
 
-        private void PapersButton_Click(object sender, RoutedEventArgs e)
+        private void InformationButton_Click(object sender, RoutedEventArgs e)
         {
-            PaperWindow paperWindow = new PaperWindow() { Owner = this };
-            paperWindow.Show();
+            InformationWindow infoWindow = new InformationWindow();
+            infoWindow.Show();
         }
 
         private void EditPersonButton_Click(object sender, RoutedEventArgs e)
         {
-            TreeView tree = AccountsBox.SelectedItem as TreeView;
-            
-            if(tree == null)
+            if (!(AccountsBox.SelectedItem is TreeView tree))
             {
                 MessageBox.Show(this, "Select a person.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
             Person person = (tree.Items[0] as TreeViewItem).Header as Person;
-            EditPersonWindow editWindow = new EditPersonWindow(person) { Owner = this, Topmost= true };
+            EditPersonWindow editWindow = new EditPersonWindow(person) { Topmost= true };
             if(editWindow.ShowDialog() == true)
             {
                 Search_TextChanged(null, null);

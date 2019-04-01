@@ -19,7 +19,7 @@
 
         <Button x:Name="CarsButton" Content="Cars" HorizontalAlignment="Left" Margin="10,459,0,0" VerticalAlignment="Top" Width="305" Height="27" AutomationProperties.HelpText="Shows available cars to sell" Click="CarsButton_Click"/>
         <Button x:Name="SellCarButton" Content="Sell Car" HorizontalAlignment="Left" Margin="10,491,0,0" VerticalAlignment="Top" Width="305" Height="27" AutomationProperties.HelpText="Sell a car" Click="SellCarButton_Click"/>
-        <Button x:Name="PapersButton" Content="Papers" HorizontalAlignment="Left" Margin="10,523,0,0" VerticalAlignment="Top" Width="305" Height="27" AutomationProperties.HelpText="Shows copies of important papers" Click="PapersButton_Click"/>
-        <Button x:Name="EditPersonButton" Content="Edit Person" HorizontalAlignment="Left" Margin="10,555,0,0" VerticalAlignment="Top" Width="305" Height="27" AutomationProperties.HelpText="Shows copies of important papers" Click="EditPersonButton_Click"/>
+        <Button x:Name="InformationButton" Content="Information" HorizontalAlignment="Left" Margin="10,523,0,0" VerticalAlignment="Top" Width="305" Height="27" AutomationProperties.HelpText="Shows copies of important papers" Click="InformationButton_Click"/>
+        <Button x:Name="EditPersonButton" Content="Edit Person" HorizontalAlignment="Left" Margin="10,555,0,0" VerticalAlignment="Top" Width="305" Height="27" AutomationProperties.HelpText="Edit a selected person" Click="EditPersonButton_Click"/>
     </Grid>
 </Window>

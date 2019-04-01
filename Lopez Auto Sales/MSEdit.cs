@@ -440,7 +440,7 @@ namespace Lopez_Auto_Sales
                 ws.Cells[12 + i, "D"] = (due -= p.Amount).ToString("C");
                 index++;
             }
-            ws.Cells[36, "G"] = car.GetBalance().ToString("C");
+            ws.Cells[36, "G"] = car.Balance.ToString("C");
             wb.PrintOutEx();
             wb.Close(false);
             Excel.Quit();

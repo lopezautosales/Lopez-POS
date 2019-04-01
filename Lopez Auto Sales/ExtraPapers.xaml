@@ -5,10 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Lopez_Auto_Sales"
         mc:Ignorable="d"
-        Title="Extra Papers" Height="216.8" Width="300" Background="#FF656565" ResizeMode="NoResize">
+        Title="Extra Papers" Height="185.829" Width="303.26" Background="#FF656565" ResizeMode="NoResize" Topmost="True" Loaded="Window_Loaded">
     <Grid>
-        <Button x:Name="PrintButton" Content="Print" HorizontalAlignment="Left" Margin="146,149,0,0" VerticalAlignment="Top" Width="75" Click="PrintButton_Click"/>
-        <Button x:Name="CancelButton" Content="Cancel" HorizontalAlignment="Left" Margin="66,149,0,0" VerticalAlignment="Top" Width="75" Click="CancelButton_Click"/>
+        <Button x:Name="PrintButton" Content="Print" HorizontalAlignment="Left" Margin="199,119,0,0" VerticalAlignment="Top" Width="75" Click="PrintButton_Click"/>
         <CheckBox Content="Contract" HorizontalAlignment="Left" Margin="28,42,0,0" VerticalAlignment="Top" Unchecked="CheckBox_Checked" Checked="CheckBox_Checked"/>
         <TextBlock HorizontalAlignment="Left" Margin="75,10,0,0" TextWrapping="Wrap" Text="Select the Papers to Print" VerticalAlignment="Top"/>
         <CheckBox Content="Warranty" HorizontalAlignment="Left" Margin="28,63,0,0" VerticalAlignment="Top" Unchecked="CheckBox_Checked" Checked="CheckBox_Checked"/>

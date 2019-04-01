@@ -51,7 +51,7 @@ namespace Lopez_Auto_Sales
                 MessageBox.Show("Enter a 10 digit phone number or leave blank.", "Phone Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return false;
             }
-            newPerson = new Person(NameBox.Text.ToCapital(), PhoneBox.Text, AddressBox.Text.ToCapital(), CityBox.Text.ToCapital(), StateBox.Text.ToCapital(), ZipBox.Text, person.Cars, person.PersonID);
+            newPerson = new Person(person.PersonID, NameBox.Text.ToCapital(), PhoneBox.Text, AddressBox.Text.ToCapital(), CityBox.Text.ToCapital(), StateBox.Text.ToCapital(), ZipBox.Text, person.Cars);
             return true;
         }
 

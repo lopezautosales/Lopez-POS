@@ -15,7 +15,7 @@ namespace Lopez_Auto_Sales
         public string ZIP { get; private set; }
         public string Full_Address { get { return Address + "," + City + "," + State + "," + ZIP; } }
 
-        public Person(string name, string phone, string full_address, List<PaymentCar> cars, int personID)
+        public Person(int personID, string name, string phone, string full_address, List<PaymentCar> cars)
         {
             Name = name;
             Cars = cars;
@@ -31,7 +31,7 @@ namespace Lopez_Auto_Sales
             PersonID = personID;
         }
 
-        public Person(string name, string phone, string address, string city, string state, string zip, List<PaymentCar> cars, int personID)
+        public Person(int personID, string name, string phone, string address, string city, string state, string zip, List<PaymentCar> cars)
         {
             Name = name;
             Cars = cars;

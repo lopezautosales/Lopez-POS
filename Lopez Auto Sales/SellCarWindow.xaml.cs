@@ -14,12 +14,12 @@ namespace Lopez_Auto_Sales
     {
         private decimal Due { get; set; }
         private decimal Balance { get; set; }
-        SalesCar Car { get; set; }
+        SalesCar InCar { get; set; }
 
         public SellCarWindow(SalesCar car = null)
         {
             InitializeComponent();
-            Car = car;
+            InCar = car;
         }
 
         private bool CheckPerson(out Person person)
@@ -35,7 +35,7 @@ namespace Lopez_Auto_Sales
                 MessageBox.Show("Enter a 10 digit phone number or leave blank.", "Phone Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return false;
             }
-            person = new Person(BuyerBox.Text.ToCapital(), PhoneBox.Text, AddressBox.Text.ToCapital(), CityBox.Text.ToCapital(), StateBox.Text.ToCapital(), ZipBox.Text, null, 0);
+            person = new Person(0, BuyerBox.Text.ToCapital(), PhoneBox.Text, AddressBox.Text.ToCapital(), CityBox.Text.ToCapital(), StateBox.Text.ToCapital(), ZipBox.Text, null);
             return true;
         }
 
@@ -184,36 +184,47 @@ namespace Lopez_Auto_Sales
 
             if (Balance != 0)
             {
-                int carID, personID, paymentID;
-               if (Storage.People.Exists(p => p.Name == buyer.Name))
-               {
-                    Person person = Storage.People.Find(p => p.Name == buyer.Name);
-                    personID = person.PersonID;
-                    carID = Storage.AddPaymentCar(car.Year, car.Make, car.Model, car.VIN, Due, average, DateTime.Now, car.Color, personID);
-                    paymentID = Storage.AddPayment(carID, DateTime.Now, down, true);
+                int personID;
+                Person person = null;
 
-                    List<Payment> payments = new List<Payment>() { new Payment(DateTime.Now, down, true, carID, paymentID) };
-                    PaymentCar paymentCar = new PaymentCar(car.Year, car.Make, car.Model, car.VIN, Due, average, car.Color, DateTime.Now, payments, personID, carID);
-                    Storage.People[Storage.People.IndexOf(person)].Cars.Add(paymentCar);
+                bool exists = Storage.People.Exists(p => p.Name == buyer.Name);
+                if (exists)
+                {
+                    person = Storage.People.Find(p => p.Name == buyer.Name);
+                    personID = person.PersonID;
                 }
                 else
                 {
                     personID = Storage.AddPerson(buyer.Name, buyer.Phone, buyer.Full_Address);
-                    carID = Storage.AddPaymentCar(car.Year, car.Make, car.Model, car.VIN, Due, average, DateTime.Now, car.Color, personID);
-                    paymentID = Storage.AddPayment(carID, DateTime.Now, down, true);
-
-                    List<Payment> payments = new List<Payment>() { new Payment(DateTime.Now, down, true, carID, paymentID) };
-                    PaymentCar paymentCar = new PaymentCar(car.Year, car.Make, car.Model, car.VIN, Due, average, car.Color, DateTime.Now, payments, personID, carID);
-                    Storage.People.Add(new Person(buyer.Name, buyer.Phone, buyer.Full_Address, new List<PaymentCar>() { paymentCar }, personID));
                 }
+
+                int carID = Storage.AddPaymentCar(personID, buyer.Name, car.Year, car.Make, car.Model, car.Mileage, car.VIN, Due, average, DateTime.Now, car.Color);
+                int paymentID = Storage.AddPayment(carID, buyer.Name, car.ToString(), DateTime.Now, down, true);
+
+                List<Payment> payments = new List<Payment>() { new Payment(paymentID, carID, DateTime.Now, down, true) };
+                PaymentCar paymentCar = new PaymentCar(buyer.Name, car.Year, car.Make, car.Model, car.Mileage, car.VIN, Due, average, car.Color, DateTime.Now, payments, personID, carID);
+
+                if (exists)
+                    Storage.People[Storage.People.IndexOf(person)].Cars.Add(paymentCar);
+                else
+                    Storage.People.Add(new Person(personID, buyer.Name, buyer.Phone, buyer.Full_Address, new List<PaymentCar>() { paymentCar }));
 
                 (Owner as MainWindow).Search_TextChanged(null, null);
             }
             MSEdit.AddEndOfYear(paperInfo, boughtPrice);
-            if (Storage.SalesCars.Exists(c => c.VIN == VINBox.Text))
+            if (Storage.SalesCars.Exists(c => c.VIN == car.VIN))
             {
-                Storage.RemoveSalesCar(Storage.SalesCars.Find(c => c.VIN == VINBox.Text));
+                Storage.RemoveSalesCar(Storage.SalesCars.Find(c => c.VIN == car.VIN));
             }
+
+            bool salvage = false;
+            DateTime listDate = DateTime.Now;
+            if(InCar != null)
+            {
+                salvage = InCar.Salvage;
+                listDate = InCar.ListDate;
+            }
+            Storage.AddSales(buyer.Name, car.VIN, car.Year, car.Make, car.Model, car.Color, car.Mileage, car.Value, boughtPrice, listDate, DateTime.Now, salvage);
         }
 
         private void PhoneBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -299,16 +310,16 @@ namespace Lopez_Auto_Sales
             StateBox.ItemsSource = Constants.States;
             VINBox.ItemsSource = Storage.SalesCars;
 
-            if(Car != null)
+            if(InCar != null)
             {
-                VINBox.Text = Car.VIN;
-                YearBox.Text = Car.Year.ToString();
-                MakeBox.Text = Car.Make;
-                ModelBox.Text = Car.Model;
-                MileageBox.Text = Car.Mileage == null ? "Exempt" : Car.Mileage.Value.ToString();
-                PriceBox.Text = Car.Price.ToString("N2");
-                ColorBox.Text = Car.Color;
-                BoughtPriceBox.Text = Car.BoughtPrice.ToString("N2");
+                VINBox.Text = InCar.VIN;
+                YearBox.Text = InCar.Year.ToString();
+                MakeBox.Text = InCar.Make;
+                ModelBox.Text = InCar.Model;
+                MileageBox.Text = InCar.Mileage == null ? "Exempt" : InCar.Mileage.Value.ToString();
+                PriceBox.Text = InCar.Price.ToString("N2");
+                ColorBox.Text = InCar.Color;
+                BoughtPriceBox.Text = InCar.BoughtPrice.ToString("N2");
             }
         }
 
@@ -322,16 +333,16 @@ namespace Lopez_Auto_Sales
 
             if (Storage.SalesCars.Exists(c => c.VIN == VINBox.Text))
             {
-                Car = Storage.SalesCars.Find(c => c.VIN == VINBox.Text);
+                InCar = Storage.SalesCars.Find(c => c.VIN == VINBox.Text);
 
-                VINBox.Text = Car.VIN;
-                YearBox.Text = Car.Year.ToString();
-                MakeBox.Text = Car.Make;
-                ModelBox.Text = Car.Model;
-                MileageBox.Text = Car.Mileage == null ? "Exempt" : Car.Mileage.Value.ToString();
-                PriceBox.Text = Car.Price.ToString("N2");
-                ColorBox.Text = Car.Color;
-                BoughtPriceBox.Text = Car.BoughtPrice.ToString("N2");
+                VINBox.Text = InCar.VIN;
+                YearBox.Text = InCar.Year.ToString();
+                MakeBox.Text = InCar.Make;
+                ModelBox.Text = InCar.Model;
+                MileageBox.Text = InCar.Mileage == null ? "Exempt" : InCar.Mileage.Value.ToString();
+                PriceBox.Text = InCar.Price.ToString("N2");
+                ColorBox.Text = InCar.Color;
+                BoughtPriceBox.Text = InCar.BoughtPrice.ToString("N2");
             }
             else
             {

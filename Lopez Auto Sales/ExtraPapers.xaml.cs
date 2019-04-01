@@ -10,20 +10,39 @@ namespace Lopez_Auto_Sales
     public partial class ExtraPapers : Window
     {
         internal List<string> papers = new List<string>();
-        public ExtraPapers()
+        private string PersonName { get; set; }
+        private string VIN { get; set; }
+        public ExtraPapers(string personName, string vin)
         {
             InitializeComponent();
+            PersonName = personName;
+            VIN = vin;
         }
 
         private void PrintButton_Click(object sender, RoutedEventArgs e)
         {
-            DialogResult = true;
-            Close();
-        }
+            if (papers.Count == 0)
+                return;
 
-        private void CancelButton_Click(object sender, RoutedEventArgs e)
-        {
-            DialogResult = false;
+            if (!Storage.Papers.Exists(paper => paper.Buyer.Name == PersonName && paper.Car.VIN == VIN))
+            {
+                MessageBox.Show("Could not find paper info.", "Paper Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+            PaperInfo paperInfo = Storage.Papers.Find(paper => paper.Buyer.Name == PersonName && paper.Car.VIN == VIN);
+
+            if (papers.Contains("Contract"))
+                MSEdit.PrintContract(paperInfo);
+            if (papers.Contains("Warranty"))
+                MSEdit.PrintWarranty(paperInfo);
+            if (papers.Contains("Transfer Agreement"))
+                MSEdit.PrintTransferAgreement(paperInfo);
+            if (papers.Contains("Legal"))
+                MSEdit.PrintLegal(paperInfo);
+            if (papers.Contains("Lien Release"))
+                MSEdit.PrintLien(paperInfo);
+
+            MessageBox.Show("Papers are being printed.");
             Close();
         }
 
@@ -40,6 +59,12 @@ namespace Lopez_Auto_Sales
                 if (papers.Contains(checkBox.Content.ToString()))
                     papers.Remove(checkBox.Content.ToString());
             }
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            Title = "Extra Papers for " + PersonName;
+            Storage.LoadPapers();
         }
     }
 }

@@ -5,12 +5,12 @@ using System.Windows.Controls;
 namespace Lopez_Auto_Sales
 {
     /// <summary>
-    /// Interaction logic for InfoWindow.xaml
+    /// Interaction logic for VINDecoderWindow.xaml
     /// </summary>
-    public partial class InfoWindow : Window
+    public partial class VINDecoderWindow : Window
     {
         public string VIN { get; private set; }
-        public InfoWindow(string vin)
+        public VINDecoderWindow(string vin)
         {
             InitializeComponent();
             VIN = vin;

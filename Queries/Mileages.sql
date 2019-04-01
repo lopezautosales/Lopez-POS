@@ -1,0 +1,1 @@
+﻿SELECT * From dbo.PaperInfoTable papers, dbo.PaymentCarTable car WHERE papers.VIN = car.VIN AND papers.Date = car.BoughtDate

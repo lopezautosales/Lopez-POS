@@ -108,11 +108,20 @@
     <Compile Include="EditSalesCar.xaml.cs">
       <DependentUpon>EditSalesCar.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ExpiredContractsWindow.xaml.cs">
+      <DependentUpon>ExpiredContractsWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ExtraPapers.xaml.cs">
       <DependentUpon>ExtraPapers.xaml</DependentUpon>
     </Compile>
-    <Compile Include="InfoWindow.xaml.cs">
-      <DependentUpon>InfoWindow.xaml</DependentUpon>
+    <Compile Include="InformationWindow.xaml.cs">
+      <DependentUpon>InformationWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="LopezDataDataSet.cs">
+      <DependentUpon>LopezDataDataSet.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="VINDecoderWindow.xaml.cs">
+      <DependentUpon>VINDecoderWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Logger.cs" />
     <Compile Include="LopezDataDataSet.Designer.cs">
@@ -122,8 +131,8 @@
     </Compile>
     <Compile Include="MSEdit.cs" />
     <Compile Include="PaperInfo.cs" />
-    <Compile Include="PaperWindow.xaml.cs">
-      <DependentUpon>PaperWindow.xaml</DependentUpon>
+    <Compile Include="PapersWindow.xaml.cs">
+      <DependentUpon>PapersWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Person.cs" />
     <Compile Include="EntryWindow.xaml.cs">
@@ -157,11 +166,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="ExpiredContractsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ExtraPapers.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="InfoWindow.xaml">
+    <Page Include="InformationWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="VINDecoderWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -177,7 +194,7 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="PaperWindow.xaml">
+    <Page Include="PapersWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

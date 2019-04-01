@@ -13,14 +13,17 @@ namespace Lopez_Auto_Sales.Cars
         public DateTime BoughtDate { get; private set; }
         internal List<Payment> Payments = new List<Payment>();
         internal Payment Down { get { return Payments.Find(p => p.Down == true); } }
+        public string Person { get; private set; }
 
-        public PaymentCar(int year, string make, string model, string vin, decimal due, decimal expected, string color, DateTime boughtDate, List<Payment> payments, int personID, int carID) : base(year, make, model, color, vin, 0, null)
+        public PaymentCar(string person, int year, string make, string model, int? mileage, string vin, decimal due, decimal expected, string color, DateTime boughtDate, List<Payment> payments, int personID, int carID) : base(year, make, model, color, vin, 0, mileage)
         {
+            Person = person;
             Year = year;
             Make = make;
             Model = model;
             VIN = vin;
             Payments = payments;
+            Mileage = mileage;
             Due = due;
             Color = color;
             BoughtDate = boughtDate;
@@ -31,8 +34,8 @@ namespace Lopez_Auto_Sales.Cars
 
         public void AddPayment(DateTime date, decimal amount, bool down)
         {
-            int paymentID = Storage.AddPayment(CarID, date, amount, false);
-            Payments.Add(new Payment(date, amount,down, CarID, paymentID));
+            int paymentID = Storage.AddPayment(CarID, Person, this.ToString(), date, amount, false);
+            Payments.Add(new Payment(paymentID, CarID, date, amount,down));
         }
 
         public void EditPayment(Payment payment, Payment newPayment, string reason)
@@ -57,9 +60,9 @@ namespace Lopez_Auto_Sales.Cars
             return total;
         }
 
-        public decimal GetBalance()
+        public decimal Balance
         {
-            return Due - TotalPayments();
+            get { return Due - TotalPayments(); }
         }
 
         public int MonthsToPay()

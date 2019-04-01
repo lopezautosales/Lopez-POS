@@ -4,11 +4,11 @@ using System.Windows;
 namespace Lopez_Auto_Sales
 {
     /// <summary>
-    /// Interaction logic for PaperWindow.xaml
+    /// Interaction logic for PapersWindow.xaml
     /// </summary>
-    public partial class PaperWindow : Window
+    public partial class PapersWindow : Window
     {
-        public PaperWindow()
+        public PapersWindow()
         {
             InitializeComponent();
         }
@@ -37,6 +37,7 @@ namespace Lopez_Auto_Sales
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            Storage.LoadPapers();
             PaperInfoGrid.ItemsSource = null;
             PaperInfoGrid.ItemsSource = Storage.Papers;
         }

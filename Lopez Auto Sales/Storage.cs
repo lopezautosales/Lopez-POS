@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace Lopez_Auto_Sales
@@ -17,40 +18,38 @@ namespace Lopez_Auto_Sales
         static PaymentTableTableAdapter paymentAdapter = new PaymentTableTableAdapter();
         static PaperInfoTableTableAdapter paperInfoAdapter = new PaperInfoTableTableAdapter();
         static RemovedPaymentTableTableAdapter removedPaymentAdapter = new RemovedPaymentTableTableAdapter();
-        static PaidCarTableTableAdapter paidCarAdapter = new PaidCarTableTableAdapter();
+        static SalesTableTableAdapter salesAdapter = new SalesTableTableAdapter();
         internal static List<Person> People = new List<Person>();
         internal static List<SalesCar> SalesCars = new List<SalesCar>();
         internal static List<PaperInfo> Papers = new List<PaperInfo>();
         public const string CONNECTION = "Data Source = (LocalDB)\\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\\LopezData.mdf;Integrated Security = True; Connect Timeout = 30; MultipleActiveResultSets=True ";
+        private static bool isPapersLoaded = false;
 
         internal static void Init()
         {
-            if (File.Exists("Entries.xml"))
-            {
-                AddEntriesToDatabase("Entries.xml");
-                File.Move("Entries.xml", "Old.xml");
-            }
-            if (File.Exists("Cars.xml"))
-            {
-                AddCarsToDatabase("Cars.xml");
-                File.Move("Cars.xml", "OldCars.xml");
-            }
-
             peopleAdapter.Fill(lopezData.PeopleTable);
             paymentCarAdapter.Fill(lopezData.PaymentCarTable);
             paymentAdapter.Fill(lopezData.PaymentTable);
             salesCarAdapter.Fill(lopezData.SalesCarTable);
-            paperInfoAdapter.Fill(lopezData.PaperInfoTable);
 
             People.Populate();
             SalesCars.Populate();
-            Papers.Populate();
+        }
+
+        internal static void LoadPapers()
+        {
+            if (!isPapersLoaded)
+            {
+                paperInfoAdapter.Fill(lopezData.PaperInfoTable);
+                Papers.Populate();
+                isPapersLoaded = true;
+            }
         }
 
         #region POPULATE
         private static void Populate(this List<SalesCar> cars)
         {
-            foreach (DataRow car in lopezData.SalesCarTable)
+            Parallel.ForEach(lopezData.SalesCarTable, (DataRow car) =>
             {
                 int year = (int)car["Year"];
                 string make = (string)car["Make"];
@@ -66,12 +65,12 @@ namespace Lopez_Auto_Sales
                 bool extraKey = (bool)car["ExtraKey"];
 
                 cars.Add(new SalesCar(year, make, model, vin, mileage, price, lowestPrice, date, color, boughtPrice, salvage, extraKey));
-            }
+            });
         }
 
         private static void Populate(this List<Person> people)
         {
-            foreach (DataRow person in lopezData.PeopleTable)
+            Parallel.ForEach(lopezData.PeopleTable, (DataRow person) =>
             {
                 string name = (string)person["Name"];
                 string phone = (string)person["Phone"];
@@ -80,7 +79,7 @@ namespace Lopez_Auto_Sales
 
                 List<PaymentCar> cars = new List<PaymentCar>();
 
-                foreach (DataRow car in lopezData.PaymentCarTable.Select("PersonId=" + personId))
+                Parallel.ForEach(lopezData.PaymentCarTable.Select("PersonId=" + personId), (DataRow car) =>
                 {
                     int year = (int)car["Year"];
                     string make = (string)car["Make"];
@@ -88,6 +87,7 @@ namespace Lopez_Auto_Sales
                     string vin = (string)car["VIN"];
                     decimal due = (decimal)car["Due"];
                     decimal expected = (decimal)car["Expected"];
+                    int? mileage = car["Mileage"] is DBNull ? null : (int?)car["Mileage"];
                     string color = (string)car["Color"];
                     DateTime boughtdate = (DateTime)car["BoughtDate"];
                     int carID = (int)car["CarId"];
@@ -100,18 +100,18 @@ namespace Lopez_Auto_Sales
                         bool down = (bool)payment["Down"];
                         int paymentId = (int)payment["PaymentId"];
 
-                        payments.Add(new Payment(date, amount, down, carID, paymentId));
+                        payments.Add(new Payment(paymentId, carID, date, amount, down));
                     }
 
-                    cars.Add(new PaymentCar(year, make, model, vin, due, expected, color, boughtdate, payments, personId, carID));
-                }
-                people.Add(new Person(name, phone, address, cars, personId));
-            }
+                    cars.Add(new PaymentCar(name, year, make, model, mileage, vin, due, expected, color, boughtdate, payments, personId, carID));
+                });
+                people.Add(new Person(personId, name, phone, address, cars));
+            });
         }
 
         private static void Populate(this List<PaperInfo> papers)
         {
-            foreach (DataRow row in lopezData.PaperInfoTable)
+            Parallel.ForEach(lopezData.PaperInfoTable, (DataRow row) =>
             {
                 Car trade = null;
                 if (!(row["TradeVIN"] is DBNull))
@@ -120,10 +120,10 @@ namespace Lopez_Auto_Sales
                     trade = new Car((int)row["TradeYear"], (string)row["TradeMake"], (string)row["TradeModel"], (string)row["TradeColor"], (string)row["TradeVIN"], (decimal)row["TradeValue"], trademileage);
                 }
                 int? mileage = row["Mileage"] is DBNull ? null : (int?)row["Mileage"];
-                Person person = new Person((string)row["Buyer"], (string)row["Phone"], (string)row["Address"], null, 0);
+                Person person = new Person(0, (string)row["Buyer"], (string)row["Phone"], (string)row["Address"], null);
                 Car car = new Car((int)row["Year"], (string)row["Make"], (string)row["Model"], (string)row["Color"], (string)row["VIN"], (decimal)row["SellingPrice"], mileage);
                 papers.Add(new PaperInfo((DateTime)row["Date"], person, (string)row["CoBuyer"], car, trade, (decimal)row["Down"], (bool)row["Tag"], (bool)row["Lien"], (bool)row["OutOfState"], (decimal)row["Tax"], (int)row["Warranty"], (decimal)row["AveragePayment"]));
-            }
+            });
         }
         #endregion
         #region PAPERINFO
@@ -144,64 +144,11 @@ namespace Lopez_Auto_Sales
             }
         }
         #endregion
-        #region CONVERT_OLD_STORAGE
-        private static void AddCarsToDatabase(string Path)
-        {
-            XDocument xdoc = XDocument.Load(Path);
-
-            foreach (XElement car in xdoc.Root.Elements())
-            {
-                int? mileage = null;
-                if (car.Element("Miles").Value != "Exempt")
-                    mileage = int.Parse(car.Element("Miles").Value);
-
-                salesCarAdapter.Insert(car.Attribute("VIN").Value, int.Parse(car.Element("Year").Value), car.Element("Make").Value, car.Element("Model").Value, car.Element("Color").Value, mileage, decimal.Parse(car.Element("Price").Value), 0m, DateTime.Now, decimal.Parse(car.Element("Bought").Value), false, false);
-            }
-        }
-
-        private static void AddEntriesToDatabase(string Path)
-        {
-            XDocument xdoc = XDocument.Load(Path);
-
-            foreach (XElement person in xdoc.Root.Elements())
-            {
-                bool InUse = false;
-                foreach (XElement entry in person.Element("Entries").Elements())
-                {
-                    if (entry.Name != "Entry")
-                        continue;
-                    if (Decimal.Parse(entry.Element("Balance").Value) == 0)
-                        continue;
-                    InUse = true;
-                }
-                if (!InUse)
-                    continue;
-                int personID = (int)peopleAdapter.InsertQuery(person.Attribute("Name").Value, person.Element("Address").Value + "," + person.Element("Address").Attribute("City").Value + "," + person.Element("Address").Attribute("State").Value + "," + person.Element("Address").Attribute("ZIP").Value, person.Attribute("Phone").Value);
-                foreach (XElement entry in person.Element("Entries").Elements())
-                {
-                    if (entry.Name != "Entry")
-                        continue;
-                    if (Decimal.Parse(entry.Element("Balance").Value) == 0)
-                        continue;
-                    string make = entry.Attribute("Name").Value.Split(' ')[1];
-
-                    int carID = (int)paymentCarAdapter.InsertQuery(personID, int.Parse(entry.Attribute("Name").Value.Split(' ')[0]), make, entry.Attribute("Name").Value.Substring(entry.Attribute("Name").Value.IndexOf(make) + make.Length + 1),
-                        entry.Attribute("VIN").Value, decimal.Parse(entry.Attribute("Due").Value), entry.Attribute("Color").Value, decimal.Parse(entry.Element("Expected").Value), DateTime.Parse(entry.Element("Payments").Element("Down").Attribute("Date").Value));
-
-                    foreach (XElement payment in entry.Element("Payments").Elements())
-                    {
-                        paymentAdapter.Insert(carID, DateTime.Parse(payment.Attribute("Date").Value), decimal.Parse(payment.Attribute("Amount").Value), payment.Name == "Down");
-                    }
-                }
-            }
-        }
-
-        #endregion
         #region PERSON
         internal static int AddPerson(string name, string phone, string full_Address)
         {
             Logger.AddPerson(name, phone, full_Address);
-            return (int)peopleAdapter.InsertQuery(name, full_Address, phone);
+            return peopleAdapter.Insert(name, full_Address, phone);
         }
         internal static void UpdatePerson(Person person, Person newPerson)
         {
@@ -255,17 +202,17 @@ namespace Lopez_Auto_Sales
             paymentAdapter.Update(payment.CarID, date, amount, payment.Down, payment.PaymentID, payment.CarID, payment.Date, payment.Amount, payment.Down);
         }
 
-        internal static int AddPayment(int carID, DateTime date, decimal amount, bool down)
+        internal static int AddPayment(int carID, string person, string car, DateTime date, decimal amount, bool down)
         {
-            Logger.AddPayment(carID, date, amount, down);
-            return (int)paymentAdapter.InsertQuery(carID, date, amount, down);
+            Logger.AddPayment(person, car, date, amount);
+            return paymentAdapter.Insert(carID, date, amount, down);
         }
         #endregion
         #region PAYMENTCAR
-        internal static int AddPaymentCar(int year, string make, string model, string VIN, decimal due, decimal average, DateTime now, string color, int personID)
+        internal static int AddPaymentCar(int personID, string person, int year, string make, string model, int? mileage, string VIN, decimal due, decimal average, DateTime now, string color)
         {
-            Logger.AddPaymentCar(year, make, model, VIN, due, average, now, color, personID);
-            return (int)paymentCarAdapter.InsertQuery(personID, year, make, model, VIN, due, color, average, now);
+            Logger.AddPaymentCar(person, year, make, model, VIN, due, average, now, color);
+            return paymentCarAdapter.Insert(personID, year, make, model, VIN, due, color, average, now, mileage);
         }
 
         internal static void RemovePaymentCar(Person person, PaymentCar car)
@@ -276,9 +223,14 @@ namespace Lopez_Auto_Sales
             {
                 paymentAdapter.Delete(p.PaymentID, car.CarID, p.Date, p.Amount, p.Down);
             }
-            paymentCarAdapter.Delete(car.CarID, car.PersonID, car.Year, car.Make, car.Model, car.VIN, car.Due, car.Color, car.Expected, car.BoughtDate);
-            paidCarAdapter.Insert(car.PersonID, car.Year, car.Make, car.Model, car.VIN, car.Due, car.Color, car.Expected, car.BoughtDate);
+            paymentCarAdapter.Delete(car.CarID, car.PersonID, car.Year, car.Make, car.Model, car.VIN, car.Due, car.Color, car.Expected, car.BoughtDate, car.Mileage);
         }
         #endregion
+        #region Sales
+        internal static void AddSales(string name, string vin, int year, string make, string model, string color, int? mileage, decimal sellingPrice, decimal boughtPrice, DateTime listDate, DateTime boughtDate, bool salvage)
+        {
+            salesAdapter.Insert(name, vin, year, make, model, color, mileage, sellingPrice, boughtPrice, listDate, boughtDate, salvage);
+        }
+        #endregion  
     }
 }

@@ -52,7 +52,7 @@ namespace Lopez_Auto_Sales
                 return;
             }
 
-            InfoWindow infoWindow = new InfoWindow((CarGrid.SelectedItem as SalesCar).VIN);
+            VINDecoderWindow infoWindow = new VINDecoderWindow((CarGrid.SelectedItem as SalesCar).VIN);
             infoWindow.Show();
         }
 

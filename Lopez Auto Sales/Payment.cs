@@ -10,7 +10,7 @@ namespace Lopez_Auto_Sales
         public DateTime Date { get; private set; }
         public bool Down { get; private set; }
 
-        public Payment(DateTime date, decimal amount, bool down, int carID, int paymentID)
+        public Payment(int paymentID, int carID, DateTime date, decimal amount, bool down)
         {
             Date = date;
             Amount = amount;

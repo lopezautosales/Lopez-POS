@@ -21,12 +21,12 @@ namespace Lopez_Auto_Sales
         private void UpdateInfo()
         {
             dueLabel.Text = "Total Due: " + Car.Due.ToString("C");
-            balanceLabel.Text = "Balance: " + Car.GetBalance().ToString("C");
+            balanceLabel.Text = "Balance: " + Car.Balance.ToString("C");
             expirationLabel.Text = "Contract Expiration Date: " + Car.ContractExpirationDate().ToString("MM/dd/yyyy");
             daysLabel.Text = "Days From Last Payment: " + Car.DaysSinceLastPayment();
             lateLabel.Text = "Late Due: " + Car.LateDue().ToString("C");
 
-            if (Car.GetBalance() == 0)
+            if (Car.Balance == 0)
                 PaymentButton.Content = "Close Entry";
             else
                 PaymentButton.Content = "+ Add Payment";
@@ -41,12 +41,13 @@ namespace Lopez_Auto_Sales
 
         private void PaymentButton_Click(object sender, RoutedEventArgs e)
         {
-            if(Car.GetBalance() == 0)
+            if(Car.Balance == 0)
             {
                 Storage.RemovePaymentCar(Person, Car);
                 if (Person.Cars.Count == 0)
                     Storage.RemovePerson(Person);
-                (Owner as MainWindow).Search_TextChanged(null, null);
+                if(Owner is MainWindow mainWindow)
+                    mainWindow.Search_TextChanged(null, null);
                 Close();
                 MessageBox.Show("Account Closed.");
                 return;
@@ -58,7 +59,7 @@ namespace Lopez_Auto_Sales
                 return;
             }
             
-            if(Car.GetBalance() < paymentAmount)
+            if(Car.Balance < paymentAmount)
             {
                 MessageBox.Show("Cannot pay more than the car's balance.", "Payment Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
@@ -116,40 +117,8 @@ namespace Lopez_Auto_Sales
 
         private void PapersButton_Click(object sender, RoutedEventArgs e)
         {
-            ExtraPapers extraPapers = new ExtraPapers
-            {
-                Owner = this,Topmost = true
-            };
-            if (extraPapers.ShowDialog() == true)
-            {
-                if(!Storage.Papers.Exists(paper=> paper.Buyer.Name == Person.Name && paper.Car.VIN == Car.VIN))
-                {
-                    MessageBox.Show("Could not find paper info.", "Paper Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
-                    return;
-                }
-                PaperInfo paperInfo = Storage.Papers.Find(paper => paper.Buyer.Name == Person.Name && paper.Car.VIN == Car.VIN);
-
-                if (extraPapers.papers.Contains("Contract"))
-                {
-                    MSEdit.PrintContract(paperInfo);
-                }
-                if (extraPapers.papers.Contains("Warranty"))
-                {
-                    MSEdit.PrintWarranty(paperInfo);
-                }
-                if (extraPapers.papers.Contains("Transfer Agreement"))
-                {
-                    MSEdit.PrintTransferAgreement(paperInfo);
-                }
-                if (extraPapers.papers.Contains("Legal"))
-                {
-                    MSEdit.PrintLegal(paperInfo);
-                }
-                if (extraPapers.papers.Contains("Lien Release"))
-                {
-                    MSEdit.PrintLien(paperInfo);
-                }
-            }
+            ExtraPapers extraPapers = new ExtraPapers(Person.Name, Car.VIN);
+            extraPapers.Show();
         }
     }
 }

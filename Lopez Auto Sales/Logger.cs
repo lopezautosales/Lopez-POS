@@ -57,17 +57,17 @@ namespace Lopez_Auto_Sales
                 payment.Date, payment.Amount, date, amount, reason));
         }
 
-        internal static void AddPayment(int carID, DateTime date, decimal amount, bool down)
+        internal static void AddPayment(string person, string car, DateTime date, decimal amount)
         {
-            File.AppendAllText(LOG_PATH, String.Format("[{0}]: {1}\tCarID: {2}\tAmount: {3}\r\n", DateTime.Now, MethodBase.GetCurrentMethod().Name.ToUpper(),
-                carID, amount));
+            File.AppendAllText(LOG_PATH, String.Format("[{0}]: {1}\tPerson: {2}\tCar: {3}\tAmount: {4}\r\n", DateTime.Now, MethodBase.GetCurrentMethod().Name.ToUpper(),
+                person, car, amount));
         }
 
-        internal static void AddPaymentCar(int year, string make, string model, string VIN, decimal due, decimal average, DateTime now, string color, int personID)
+        internal static void AddPaymentCar(string person, int year, string make, string model, string VIN, decimal due, decimal average, DateTime now, string color)
         {
             string name = year.ToString() + ' ' + make + ' ' + model;
-            File.AppendAllText(LOG_PATH, String.Format("[{0}]: {1}\tPersonID: {2}\tName: {3}\tColor: {4}\tDue: {5}\tAverage: {6}\r\n", DateTime.Now, MethodBase.GetCurrentMethod().Name.ToUpper(),
-                personID, name, color, due, average));
+            File.AppendAllText(LOG_PATH, String.Format("[{0}]: {1}\tPerson: {2}\tName: {3}\tColor: {4}\tDue: {5}\tAverage: {6}\r\n", DateTime.Now, MethodBase.GetCurrentMethod().Name.ToUpper(),
+                person, name, color, due, average));
         }
 
         internal static void RemovePaymentCar(Person person, PaymentCar car)

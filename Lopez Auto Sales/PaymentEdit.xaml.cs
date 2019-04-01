@@ -44,7 +44,7 @@ namespace Lopez_Auto_Sales
             }
 
             Reason = text;
-            Payment = new Payment(date, amount, Payment.Down, Payment.CarID, Payment.PaymentID);
+            Payment = new Payment(Payment.PaymentID, Payment.CarID, date, amount, Payment.Down);
             DialogResult = true;
             Close();
         }

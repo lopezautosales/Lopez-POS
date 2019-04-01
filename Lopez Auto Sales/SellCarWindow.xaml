@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Lopez_Auto_Sales"
         mc:Ignorable="d"
-        Title="Sell Car" Height="738.51" Width="511.4" Background="#FF656565" ResizeMode="NoResize" Loaded="Window_Loaded">
+        Title="Sell Car" Height="738.51" Width="511.4" Background="#FF656565" ResizeMode="NoResize" Loaded="Window_Loaded" Topmost="True">
     <Window.Resources>
         <ObjectDataProvider 
     ObjectInstance="{x:Type Colors}" 
