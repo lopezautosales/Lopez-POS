@@ -2,6 +2,7 @@
 using System;
 using System.Globalization;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
 using excel = Microsoft.Office.Interop.Excel;
 using word = Microsoft.Office.Interop.Word;
@@ -207,7 +208,7 @@ namespace Lopez_Auto_Sales
                                 break;
                         }
             }
-            document.PrintOut(true, ManualDuplexPrint: true, Pages: "1");
+            document.PrintOut(true, Pages: "1");
             document.Close(false);
             application.Quit();
         }

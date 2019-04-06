@@ -31,6 +31,8 @@ namespace Lopez_Auto_Sales
             paymentCarAdapter.Fill(lopezData.PaymentCarTable);
             paymentAdapter.Fill(lopezData.PaymentTable);
             salesCarAdapter.Fill(lopezData.SalesCarTable);
+            paperInfoAdapter.Fill(lopezData.PaperInfoTable);
+            salesAdapter.Fill(lopezData.SalesTable);
 
             People.Populate();
             SalesCars.Populate();
@@ -40,7 +42,6 @@ namespace Lopez_Auto_Sales
         {
             if (!isPapersLoaded)
             {
-                paperInfoAdapter.Fill(lopezData.PaperInfoTable);
                 Papers.Populate();
                 isPapersLoaded = true;
             }
@@ -79,7 +80,7 @@ namespace Lopez_Auto_Sales
 
                 List<PaymentCar> cars = new List<PaymentCar>();
 
-                Parallel.ForEach(lopezData.PaymentCarTable.Select("PersonId=" + personId), (DataRow car) =>
+                foreach(DataRow car in lopezData.PaymentCarTable.Select("PersonId=" + personId))
                 {
                     int year = (int)car["Year"];
                     string make = (string)car["Make"];
@@ -104,7 +105,7 @@ namespace Lopez_Auto_Sales
                     }
 
                     cars.Add(new PaymentCar(name, year, make, model, mileage, vin, due, expected, color, boughtdate, payments, personId, carID));
-                });
+                }
                 people.Add(new Person(personId, name, phone, address, cars));
             });
         }
@@ -148,7 +149,7 @@ namespace Lopez_Auto_Sales
         internal static int AddPerson(string name, string phone, string full_Address)
         {
             Logger.AddPerson(name, phone, full_Address);
-            return peopleAdapter.Insert(name, full_Address, phone);
+            return (int)peopleAdapter.InsertQuery(name, full_Address, phone);
         }
         internal static void UpdatePerson(Person person, Person newPerson)
         {
@@ -205,14 +206,14 @@ namespace Lopez_Auto_Sales
         internal static int AddPayment(int carID, string person, string car, DateTime date, decimal amount, bool down)
         {
             Logger.AddPayment(person, car, date, amount);
-            return paymentAdapter.Insert(carID, date, amount, down);
+            return (int)paymentAdapter.InsertQuery(carID, date, amount, down);
         }
         #endregion
         #region PAYMENTCAR
         internal static int AddPaymentCar(int personID, string person, int year, string make, string model, int? mileage, string VIN, decimal due, decimal average, DateTime now, string color)
         {
             Logger.AddPaymentCar(person, year, make, model, VIN, due, average, now, color);
-            return paymentCarAdapter.Insert(personID, year, make, model, VIN, due, color, average, now, mileage);
+            return (int)paymentCarAdapter.InsertQuery(personID, year, make, model, VIN, due, color, average, now, mileage);
         }
 
         internal static void RemovePaymentCar(Person person, PaymentCar car)

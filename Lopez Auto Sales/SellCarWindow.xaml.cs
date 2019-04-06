@@ -129,6 +129,7 @@ namespace Lopez_Auto_Sales
 
         private void CreateButton_Click(object sender, RoutedEventArgs e)
         {
+            //Check correctness
             if (!CheckPerson(out Person buyer))
                 return;
             if (!CheckCar(out Car car))
@@ -177,7 +178,9 @@ namespace Lopez_Auto_Sales
                 return;
             }
 
-            taxRate /= 100;
+            taxRate /= 100.0m;
+
+            //print papers
             PaperInfo paperInfo = new PaperInfo(DateTime.Now, buyer, CoBuyerBox.Text.ToCapital(), car, trade, down, TagCheckBox.IsChecked.Value, LienCheckBox.IsChecked.Value, OutOfStateCheckBox.IsChecked.Value, taxRate,warranty, average);
             MSEdit.PrintPapers(paperInfo, Balance != 0);
             Storage.AddPaperInfo(paperInfo);
@@ -187,6 +190,7 @@ namespace Lopez_Auto_Sales
                 int personID;
                 Person person = null;
 
+                //Find existing customer info
                 bool exists = Storage.People.Exists(p => p.Name == buyer.Name);
                 if (exists)
                 {
@@ -194,36 +198,51 @@ namespace Lopez_Auto_Sales
                     personID = person.PersonID;
                 }
                 else
-                {
                     personID = Storage.AddPerson(buyer.Name, buyer.Phone, buyer.Full_Address);
-                }
 
+                //Get ID's
                 int carID = Storage.AddPaymentCar(personID, buyer.Name, car.Year, car.Make, car.Model, car.Mileage, car.VIN, Due, average, DateTime.Now, car.Color);
                 int paymentID = Storage.AddPayment(carID, buyer.Name, car.ToString(), DateTime.Now, down, true);
 
+                //Make Entry
                 List<Payment> payments = new List<Payment>() { new Payment(paymentID, carID, DateTime.Now, down, true) };
                 PaymentCar paymentCar = new PaymentCar(buyer.Name, car.Year, car.Make, car.Model, car.Mileage, car.VIN, Due, average, car.Color, DateTime.Now, payments, personID, carID);
 
+                //Add to storage
                 if (exists)
                     Storage.People[Storage.People.IndexOf(person)].Cars.Add(paymentCar);
                 else
                     Storage.People.Add(new Person(personID, buyer.Name, buyer.Phone, buyer.Full_Address, new List<PaymentCar>() { paymentCar }));
 
-                (Owner as MainWindow).Search_TextChanged(null, null);
+                //Update main window's entries
+                if(Owner is MainWindow mainWindow)
+                    mainWindow.Search_TextChanged(null, null);
             }
+
             MSEdit.AddEndOfYear(paperInfo, boughtPrice);
+            RemoveSalesCar(car);
+            AddSale(buyer, car, boughtPrice);
+        }
+
+        private void RemoveSalesCar(Car car)
+        {
             if (Storage.SalesCars.Exists(c => c.VIN == car.VIN))
             {
                 Storage.RemoveSalesCar(Storage.SalesCars.Find(c => c.VIN == car.VIN));
             }
+        }
 
+        private void AddSale(Person buyer, Car car, decimal boughtPrice)
+        {
             bool salvage = false;
             DateTime listDate = DateTime.Now;
-            if(InCar != null)
+
+            if (InCar != null)
             {
                 salvage = InCar.Salvage;
                 listDate = InCar.ListDate;
             }
+
             Storage.AddSales(buyer.Name, car.VIN, car.Year, car.Make, car.Model, car.Color, car.Mileage, car.Value, boughtPrice, listDate, DateTime.Now, salvage);
         }
 
@@ -247,9 +266,7 @@ namespace Lopez_Auto_Sales
                 LienCheckBox.IsChecked = false;
             }
             else
-            {
                 UpdateInfo();
-            }
         }
 
         private void UpdateInfo()
