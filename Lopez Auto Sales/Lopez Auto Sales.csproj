@@ -253,6 +253,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Lopez Auto Sales_TemporaryKey.pfx" />
+    <None Include="LopezDataDataSet.xsc">
+      <DependentUpon>LopezDataDataSet.xsd</DependentUpon>
+    </None>
     <None Include="LopezDataDataSet.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>LopezDataDataSet.Designer.cs</LastGenOutput>
@@ -260,6 +263,7 @@
     </None>
     <None Include="LopezDataDataSet.xss">
       <DependentUpon>LopezDataDataSet.xsd</DependentUpon>
+      <SubType>Designer</SubType>
     </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
