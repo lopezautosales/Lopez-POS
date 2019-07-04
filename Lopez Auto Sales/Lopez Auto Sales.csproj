@@ -66,6 +66,9 @@
   <PropertyGroup>
     <SignManifests>true</SignManifests>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>Lopez_Auto_Sales.App</StartupObject>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
       <EmbedInteropTypes>True</EmbedInteropTypes>
@@ -73,11 +76,15 @@
     <Reference Include="Microsoft.Office.Interop.Word, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="office, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -93,127 +100,128 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
+    <ApplicationDefinition Include="Windows\App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="AddSalesCar.xaml.cs">
+    <Compile Include="Windows\AddSalesCar.xaml.cs">
       <DependentUpon>AddSalesCar.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Cars\Car.cs" />
-    <Compile Include="Constants.cs" />
-    <Compile Include="EditPersonWindow.xaml.cs">
+    <Compile Include="Code\Cars\Car.cs" />
+    <Compile Include="Code\Cars\JsonCar.cs" />
+    <Compile Include="Code\Constants.cs" />
+    <Compile Include="Windows\EditPersonWindow.xaml.cs">
       <DependentUpon>EditPersonWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="EditSalesCar.xaml.cs">
+    <Compile Include="Windows\EditSalesCar.xaml.cs">
       <DependentUpon>EditSalesCar.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ExpiredContractsWindow.xaml.cs">
+    <Compile Include="Windows\ExpiredContractsWindow.xaml.cs">
       <DependentUpon>ExpiredContractsWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ExtraPapers.xaml.cs">
+    <Compile Include="Windows\ExtraPapers.xaml.cs">
       <DependentUpon>ExtraPapers.xaml</DependentUpon>
     </Compile>
-    <Compile Include="InformationWindow.xaml.cs">
+    <Compile Include="Windows\InformationWindow.xaml.cs">
       <DependentUpon>InformationWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="LopezDataDataSet.cs">
       <DependentUpon>LopezDataDataSet.xsd</DependentUpon>
     </Compile>
-    <Compile Include="VINDecoderWindow.xaml.cs">
+    <Compile Include="Windows\VINDecoderWindow.xaml.cs">
       <DependentUpon>VINDecoderWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Logger.cs" />
+    <Compile Include="Code\Logger.cs" />
     <Compile Include="LopezDataDataSet.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>LopezDataDataSet.xsd</DependentUpon>
     </Compile>
-    <Compile Include="MSEdit.cs" />
-    <Compile Include="PaperInfo.cs" />
-    <Compile Include="PapersWindow.xaml.cs">
+    <Compile Include="Code\MSEdit.cs" />
+    <Compile Include="Code\PaperInfo.cs" />
+    <Compile Include="Windows\PapersWindow.xaml.cs">
       <DependentUpon>PapersWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Person.cs" />
-    <Compile Include="EntryWindow.xaml.cs">
+    <Compile Include="Code\Person.cs" />
+    <Compile Include="Windows\EntryWindow.xaml.cs">
       <DependentUpon>EntryWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Cars\SalesCar.cs" />
-    <Compile Include="PaymentEdit.xaml.cs">
+    <Compile Include="Code\Cars\SalesCar.cs" />
+    <Compile Include="Windows\PaymentEdit.xaml.cs">
       <DependentUpon>PaymentEdit.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SalesCarsWindow.xaml.cs">
+    <Compile Include="Windows\SalesCarsWindow.xaml.cs">
       <DependentUpon>SalesCarsWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="SellCarWindow.xaml.cs">
+    <Compile Include="Windows\SellCarWindow.xaml.cs">
       <DependentUpon>SellCarWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Storage.cs" />
-    <Compile Include="VINDecoder.cs" />
-    <Page Include="AddSalesCar.xaml">
+    <Compile Include="Code\Storage.cs" />
+    <Compile Include="Code\VINDecoder.cs" />
+    <Page Include="Windows\AddSalesCar.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="EditPersonWindow.xaml">
+    <Page Include="Windows\EditPersonWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="EditSalesCar.xaml">
+    <Page Include="Windows\EditSalesCar.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="EntryWindow.xaml">
+    <Page Include="Windows\EntryWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ExpiredContractsWindow.xaml">
+    <Page Include="Windows\ExpiredContractsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ExtraPapers.xaml">
+    <Page Include="Windows\ExtraPapers.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="InformationWindow.xaml">
+    <Page Include="Windows\InformationWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="VINDecoderWindow.xaml">
+    <Page Include="Windows\VINDecoderWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MainWindow.xaml">
+    <Page Include="Windows\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="App.xaml.cs">
+    <Compile Include="Windows\App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MainWindow.xaml.cs">
+    <Compile Include="Windows\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="PapersWindow.xaml">
+    <Page Include="Windows\PapersWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="PaymentEdit.xaml">
+    <Page Include="Windows\PaymentEdit.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SalesCarsWindow.xaml">
+    <Page Include="Windows\SalesCarsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="SellCarWindow.xaml">
+    <Page Include="Windows\SellCarWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Payment.cs" />
-    <Compile Include="Cars\PaymentCar.cs" />
+    <Compile Include="Code\Payment.cs" />
+    <Compile Include="Code\Cars\PaymentCar.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -252,7 +260,6 @@
     <None Include="Documents\Warranty.docx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Lopez Auto Sales_TemporaryKey.pfx" />
     <None Include="LopezDataDataSet.xsc">
       <DependentUpon>LopezDataDataSet.xsd</DependentUpon>
     </None>
@@ -265,6 +272,7 @@
       <DependentUpon>LopezDataDataSet.xsd</DependentUpon>
       <SubType>Designer</SubType>
     </None>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -295,6 +303,9 @@
     <Content Include="LopezData_log.ldf">
       <DependentUpon>LopezData.mdf</DependentUpon>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
