@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Linq;
+using System.Windows;
 
 namespace Lopez_Auto_Sales
 {
@@ -19,20 +20,24 @@ namespace Lopez_Auto_Sales
             {
                 Storage.AddSalesCar(carAdder.Car);
 
-                CarGrid.ItemsSource = null;
-                CarGrid.ItemsSource = Storage.SalesCars;
+                ReloadVehicles();
             }
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            ReloadVehicles();
+        }
+
+        private void ReloadVehicles()
+        {
             CarGrid.ItemsSource = null;
-            CarGrid.ItemsSource = Storage.SalesCars;
+            CarGrid.ItemsSource = Storage.SalesCars.OrderBy(c => c.Make);
         }
 
         private void SellCarButton_Click(object sender, RoutedEventArgs e)
         {
-            if (CarGrid.SelectedItem == null)
+            if (CarGrid.SelectedItem == null || !(CarGrid.SelectedItem is SalesCar))
             {
                 MessageBox.Show("Select a car to sell");
                 return;
@@ -51,13 +56,13 @@ namespace Lopez_Auto_Sales
                 return;
             }
 
-            VINDecoderWindow infoWindow = new VINDecoderWindow((CarGrid.SelectedItem as SalesCar).VIN);
+            VINDecoderWindow infoWindow = new VINDecoderWindow((CarGrid.SelectedItem as SalesCar));
             infoWindow.Show();
         }
 
         private void EditCarButton_Click(object sender, RoutedEventArgs e)
         {
-            if (CarGrid.SelectedItem == null)
+            if (CarGrid.SelectedItem == null || !(CarGrid.SelectedItem is SalesCar))
             {
                 MessageBox.Show("Select a car to edit");
                 return;
@@ -76,9 +81,19 @@ namespace Lopez_Auto_Sales
                     Storage.EditSalesCar(car, editCar.Car);
                 }
 
-                CarGrid.ItemsSource = null;
-                CarGrid.ItemsSource = Storage.SalesCars;
+                ReloadVehicles();
             }
+        }
+
+        private void WarrantyButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (CarGrid.SelectedItem == null || !(CarGrid.SelectedItem is SalesCar))
+            {
+                MessageBox.Show("Select a car");
+                return;
+            }
+
+            MSEdit.PrintWarranty(CarGrid.SelectedItem as SalesCar, 20);
         }
     }
 }

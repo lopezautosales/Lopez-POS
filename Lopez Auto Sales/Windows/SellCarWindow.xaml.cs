@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Lopez_Auto_Sales.JSON;
+using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
@@ -29,7 +30,7 @@ namespace Lopez_Auto_Sales
                 MessageBox.Show("Some buyer info is blank.", "Info Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return false;
             }
-            if (!String.IsNullOrEmpty(PhoneBox.Text) && PhoneBox.Text.Length != 13)
+            if (!String.IsNullOrEmpty(PhoneBox.Text) && PhoneBox.Text.Length != 12)
             {
                 MessageBox.Show("Enter a 10 digit phone number or leave blank.", "Phone Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return false;
@@ -248,7 +249,7 @@ namespace Lopez_Auto_Sales
         private void PhoneBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (PhoneBox.Text.Length == 10 && double.TryParse(PhoneBox.Text, out double number))
-                PhoneBox.Text = String.Format("{0:(###)###-####}", number);
+                PhoneBox.Text = String.Format("{0:###-###-####}", number);
         }
 
         private void PhoneBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
@@ -339,7 +340,7 @@ namespace Lopez_Auto_Sales
             }
         }
 
-        private async void CheckButton_ClickAsync(object sender, RoutedEventArgs e)
+        private void CheckButton_Click(object sender, RoutedEventArgs e)
         {
             if (VINBox.Text.Length < 11 || VINBox.Text.Length > 17)
             {
@@ -362,7 +363,7 @@ namespace Lopez_Auto_Sales
             }
             else
             {
-                JSONClass jsonClass = await VINDecoder.DecodeVINAsync(VINBox.Text);
+                JSONClass jsonClass = WebManager.DecodeVIN(VINBox.Text);
 
                 try
                 {
@@ -377,14 +378,14 @@ namespace Lopez_Auto_Sales
             }
         }
 
-        private async void TradeCheckButton_ClickAsync(object sender, RoutedEventArgs e)
+        private void TradeCheckButton_Click(object sender, RoutedEventArgs e)
         {
             if (TradeVINBox.Text.Length < 11 || TradeVINBox.Text.Length > 17)
             {
                 MessageBox.Show("Invalid VIN length.", "VIN Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
-            JSONClass jsonClass = await VINDecoder.DecodeVINAsync(TradeVINBox.Text);
+            JSONClass jsonClass = WebManager.DecodeVIN(TradeVINBox.Text);
             try
             {
                 TradeYearBox.Text = jsonClass.Results[8].Value.ToCapital();

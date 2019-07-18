@@ -1,44 +1,22 @@
-﻿using System;
+﻿using Lopez_Auto_Sales.JSON;
+using System;
 using System.Windows;
 
 namespace Lopez_Auto_Sales
 {
     /// <summary>
-    /// Interaction logic for EditSalesCar.xaml
+    /// Interaction logic for CarAdder.xaml
     /// </summary>
-    public partial class EditSalesCar : Window
+    public partial class CarAdder : Window
     {
         public SalesCar Car { get; private set; }
 
-        public EditSalesCar(SalesCar car)
+        public CarAdder()
         {
             InitializeComponent();
-            Car = car;
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            VINBox.Text = Car.VIN;
-            YearBox.Text = Car.Year.ToString();
-            MakeBox.Text = Car.Make;
-            ModelBox.Text = Car.Model;
-            MileageBox.Text = Car.Mileage.ToString();
-            ColorComboBox.Text = Car.Color;
-            ExtraCheckBox.IsChecked = Car.ExtraKey;
-            PriceBox.Text = Car.Price.ToString("N2");
-            LowestPriceBox.Text = Car.LowestPrice.ToString("N2");
-            BoughtPriceBox.Text = Car.BoughtPrice.ToString("N2");
-            SalvageCheckBox.IsChecked = Car.Salvage;
-        }
-
-        private void DeleteButton_Click(object sender, RoutedEventArgs e)
-        {
-            Car = null;
-            DialogResult = true;
-            Close();
-        }
-
-        private void SaveButton_Click(object sender, RoutedEventArgs e)
+        private void AddButton_Click(object sender, RoutedEventArgs e)
         {
             if (String.IsNullOrEmpty(VINBox.Text) || String.IsNullOrEmpty(MakeBox.Text) || String.IsNullOrEmpty(ModelBox.Text) || String.IsNullOrEmpty(ColorComboBox.Text))
             {
@@ -82,19 +60,28 @@ namespace Lopez_Auto_Sales
                 return;
             }
 
-            Car = new SalesCar(year, MakeBox.Text.ToCapital(), ModelBox.Text.ToCapital(), VINBox.Text.ToUpper(), mileage, price, lowestPrice, Car.ListDate, ColorComboBox.Text.ToCapital(), boughtPrice, SalvageCheckBox.IsChecked.Value, ExtraCheckBox.IsChecked.Value);
+            if (!int.TryParse(WarrantyBox.Text, out int warranty))
+            {
+                MessageBox.Show("Enter a valid warranty.");
+                return;
+            }
+
+            Car = new SalesCar(year, MakeBox.Text.ToCapital(), ModelBox.Text.ToCapital(), VINBox.Text.ToUpper(), mileage, price, lowestPrice, DateTime.Now, ColorComboBox.Text.ToCapital(), boughtPrice, SalvageCheckBox.IsChecked.Value, ExtraCheckBox.IsChecked.Value);
+            if (WarrantyCheckBox.IsChecked.Value)
+                MSEdit.PrintWarranty(Car, warranty);
             DialogResult = true;
             Close();
         }
 
-        private async void VINButton_Click(object sender, RoutedEventArgs e)
+        private void VINButton_Click(object sender, RoutedEventArgs e)
         {
             if (VINBox.Text.Length < 11 || VINBox.Text.Length > 17)
             {
                 MessageBox.Show("Invalid VIN length.");
                 return;
             }
-            JSONClass jsonClass = await VINDecoder.DecodeVINAsync(VINBox.Text);
+
+            JSONClass jsonClass = WebManager.DecodeVIN(VINBox.Text);
 
             try
             {

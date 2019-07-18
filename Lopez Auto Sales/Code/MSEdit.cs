@@ -191,7 +191,7 @@ namespace Lopez_Auto_Sales
                         #region Disclosure
 
                         case "[P_Amount]":
-                            shape.TextFrame.ContainingRange.Text = due == 0 ? String.Empty : Math.Ceiling(total / paperInfo.AveragePayment).ToString();
+                            shape.TextFrame.ContainingRange.Text = due == 0 ? String.Empty : Math.Ceiling(due / paperInfo.AveragePayment).ToString();
                             break;
 
                         case "[Payment]":
@@ -199,7 +199,7 @@ namespace Lopez_Auto_Sales
                             break;
 
                         case "[Due_Date]":
-                            shape.TextFrame.ContainingRange.Text = due == 0 ? String.Empty : "Between the 25th and 30th of every month";
+                            shape.TextFrame.ContainingRange.Text = due == 0 ? String.Empty : "End of next month";
                             break;
 
                         #endregion Disclosure

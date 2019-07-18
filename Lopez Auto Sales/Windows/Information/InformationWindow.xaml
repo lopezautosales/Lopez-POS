@@ -5,12 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Lopez_Auto_Sales"
         mc:Ignorable="d"
-        Title="Information Window" Height="194.58" Width="333.6" Background="#FF656565" ResizeMode="NoResize" Loaded="Window_Loaded">
+        Title="Information Window" Height="194.58" Width="333.6" Background="#FF656565" ResizeMode="NoResize">
     <Grid>
         <Button x:Name="PapersButton" Content="Papers" HorizontalAlignment="Left" Margin="10,31,0,0" VerticalAlignment="Top" Width="305" Height="27" AutomationProperties.HelpText="Shows past sales." Click="PapersButton_Click" />
         <Button x:Name="ExpiredContractsButton" Content="Expired Contracts" HorizontalAlignment="Left" Margin="10,63,0,0" VerticalAlignment="Top" Width="305" Height="27" AutomationProperties.HelpText="See vehicles with expired contracts." Click="ExpiredContractsButton_Click" />
         <Button x:Name="SalesButton" Content="Sales" HorizontalAlignment="Left" Margin="10,95,0,0" VerticalAlignment="Top" Width="305" Height="27" AutomationProperties.HelpText="See car sales information." Click="SalesButton_Click" />
         <TextBlock HorizontalAlignment="Left" Margin="98,10,0,0" TextWrapping="Wrap" Text="Select an Information Set" VerticalAlignment="Top" />
-        <Button x:Name="JsonButton" Content="Json" HorizontalAlignment="Left" Margin="10,127,0,0" VerticalAlignment="Top" Width="305" Height="27" AutomationProperties.HelpText="Press to generate JSON files" Click="JsonButton_ClickAsync" />
+        <Button x:Name="JsonButton" Content="Json" HorizontalAlignment="Left" Margin="10,127,0,0" VerticalAlignment="Top" Width="305" Height="27" AutomationProperties.HelpText="Press to generate JSON files" Click="JsonButton_Click" />
     </Grid>
 </Window>

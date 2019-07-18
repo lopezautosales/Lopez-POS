@@ -5,9 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Lopez_Auto_Sales"
         mc:Ignorable="d"
-        Title="Info Window" Height="412.357" Width="347.909" Background="#FF656565" ResizeMode="NoResize" Loaded="Window_Loaded">
+        Title="Info Window" Height="412.357" Width="408.709" Background="#FF656565" ResizeMode="NoResize" Loaded="Window_Loaded">
     <Grid>
-        <ListBox x:Name="NodeList" HorizontalAlignment="Left" Height="354" Margin="10,10,0,0" VerticalAlignment="Top" Width="312" BorderBrush="{x:Null}">
+        <ListBox x:Name="NodeList" HorizontalAlignment="Left" Height="354" Margin="10,10,0,0" VerticalAlignment="Top" Width="373" BorderBrush="{x:Null}">
             <ListBox.Background>
                 <SolidColorBrush Color="#FF8E8E8E" Opacity="0.5" />
             </ListBox.Background>

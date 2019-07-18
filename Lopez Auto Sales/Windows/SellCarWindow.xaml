@@ -29,7 +29,7 @@
         <Label Content="Phone: " HorizontalAlignment="Left" Margin="10,103,0,0" VerticalAlignment="Top" />
         <TextBox x:Name="PhoneBox" HorizontalAlignment="Left" Height="23" Margin="65,106,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="97" TextChanged="PhoneBox_TextChanged" PreviewTextInput="PhoneBox_PreviewTextInput" />
         <ComboBox x:Name="VINBox" HorizontalAlignment="Left" Margin="60,172,0,0" VerticalAlignment="Top" Width="140" IsEditable="True" />
-        <Button x:Name="CheckButton" Content="VIN" HorizontalAlignment="Left" Margin="10,172,0,0" VerticalAlignment="Top" Width="45" Click="CheckButton_ClickAsync" Height="22" />
+        <Button x:Name="CheckButton" Content="VIN" HorizontalAlignment="Left" Margin="10,172,0,0" VerticalAlignment="Top" Width="45" Click="CheckButton_Click" Height="22" />
         <Label Content="Year: " HorizontalAlignment="Left" Margin="10,200,0,0" VerticalAlignment="Top" />
         <TextBox x:Name="YearBox" HorizontalAlignment="Left" Height="23" Margin="60,203,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="86" />
         <Label Content="Make: " HorizontalAlignment="Left" Margin="10,231,0,0" VerticalAlignment="Top" />
@@ -45,7 +45,7 @@
         <Expander x:Name="TradeExpander" Header="Trade-In" HorizontalAlignment="Left" Height="267" Margin="244,153,0,0" VerticalAlignment="Top" Width="251">
             <Grid>
                 <TextBox x:Name="TradeVINBox" HorizontalAlignment="Left" Height="23" Margin="62,13,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="140" />
-                <Button x:Name="TradeCheckButton" Content="VIN" HorizontalAlignment="Left" Margin="10,13,0,0" VerticalAlignment="Top" Width="47" Click="TradeCheckButton_ClickAsync" Height="23" />
+                <Button x:Name="TradeCheckButton" Content="VIN" HorizontalAlignment="Left" Margin="10,13,0,0" VerticalAlignment="Top" Width="47" Click="TradeCheckButton_Click" Height="23" />
                 <Label Content="Year: " HorizontalAlignment="Left" Margin="11,41,0,0" VerticalAlignment="Top" />
                 <TextBox x:Name="TradeYearBox" HorizontalAlignment="Left" Height="23" Margin="61,45,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="86" />
                 <Label Content="Make: " HorizontalAlignment="Left" Margin="11,72,0,0" VerticalAlignment="Top" />

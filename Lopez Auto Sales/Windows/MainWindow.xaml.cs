@@ -92,6 +92,7 @@ namespace Lopez_Auto_Sales
         private void Main_Loaded(object sender, RoutedEventArgs e)
         {
             Storage.Init();
+            WebManager.Init();
             if (!IsConnectedInternet())
                 MessageBox.Show(this, "You are not connected to the internet.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
             Search_TextChanged(null, null);

@@ -5,9 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Lopez_Auto_Sales"
         mc:Ignorable="d"
-        Title="Sales Cars" Height="461.33" Width="744.758" Background="#FF656565" ResizeMode="NoResize" Loaded="Window_Loaded">
+        Title="Sales Cars" Height="461.33" Width="810.158" Background="#FF656565" ResizeMode="NoResize" Loaded="Window_Loaded">
     <Grid>
-        <DataGrid x:Name="CarGrid" HorizontalAlignment="Left" Height="379" Margin="10,10,0,0" VerticalAlignment="Top" Width="703" ColumnWidth="*" Background="#FF8E8E8E" Opacity="0.5" IsReadOnly="True" AutoGenerateColumns="False">
+        <DataGrid x:Name="CarGrid" HorizontalAlignment="Left" Height="379" Margin="10,10,0,0" VerticalAlignment="Top" Width="770" ColumnWidth="*" Background="#FF8E8E8E" Opacity="0.5" IsReadOnly="True" AutoGenerateColumns="False">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Year" Binding="{Binding Year}" />
                 <DataGridTextColumn Header="Make" Binding="{Binding Make}" />
@@ -22,8 +22,9 @@
             </DataGrid.Columns>
         </DataGrid>
         <Button x:Name="AddCarButton" Content="+ Add Car" HorizontalAlignment="Left" Margin="10,394,0,0" VerticalAlignment="Top" Width="150" Click="AddCarButton_Click" />
-        <Button x:Name="SellCarButton" Content="Sell Car" HorizontalAlignment="Left" Margin="563,394,0,0" VerticalAlignment="Top" Width="150" Click="SellCarButton_Click" />
-        <Button x:Name="InfoButton" Content="More Info" HorizontalAlignment="Left" Margin="377,394,0,0" VerticalAlignment="Top" Width="150" Click="InfoButton_Click" />
-        <Button x:Name="EditCarButton" Content="Edit Car" HorizontalAlignment="Left" Margin="195,394,0,0" VerticalAlignment="Top" Width="150" Click="EditCarButton_Click" />
+        <Button x:Name="SellCarButton" Content="Sell Car" HorizontalAlignment="Left" Margin="630,394,0,0" VerticalAlignment="Top" Width="150" Click="SellCarButton_Click" />
+        <Button x:Name="InfoButton" Content="More Info" HorizontalAlignment="Left" Margin="320,394,0,0" VerticalAlignment="Top" Width="150" Click="InfoButton_Click" />
+        <Button x:Name="EditCarButton" Content="Edit Car" HorizontalAlignment="Left" Margin="165,394,0,0" VerticalAlignment="Top" Width="150" Click="EditCarButton_Click" />
+        <Button x:Name="WarrantyButton" Content="Print Warranty" HorizontalAlignment="Left" Margin="475,394,0,0" VerticalAlignment="Top" Width="150" Click="WarrantyButton_Click" />
     </Grid>
 </Window>

@@ -67,7 +67,6 @@ namespace Lopez_Auto_Sales
             }
         }
 
-
         /// <summary>Populates the specified people.</summary>
         /// <param name="people">The people.</param>
         private static void Populate(this List<Person> people)
@@ -327,6 +326,5 @@ namespace Lopez_Auto_Sales
         }
 
         #endregion Sales
-
     }
 }

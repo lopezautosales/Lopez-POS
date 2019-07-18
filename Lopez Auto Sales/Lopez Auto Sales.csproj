@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\LibGit2Sharp.NativeBinaries.2.0.267\build\net46\LibGit2Sharp.NativeBinaries.props" Condition="Exists('..\packages\LibGit2Sharp.NativeBinaries.2.0.267\build\net46\LibGit2Sharp.NativeBinaries.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -31,6 +32,8 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -64,12 +67,15 @@
     <GenerateManifests>true</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>Lopez_Auto_Sales.App</StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="LibGit2Sharp, Version=0.26.0.0, Culture=neutral, PublicKeyToken=7cbde695407f0333, processorArchitecture=MSIL">
+      <HintPath>..\packages\LibGit2Sharp.0.26.0\lib\net46\LibGit2Sharp.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
@@ -104,31 +110,34 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Windows\AddSalesCar.xaml.cs">
+    <Compile Include="Code\GitManager.cs" />
+    <Compile Include="Code\JSON\JSONClass.cs" />
+    <Compile Include="Code\WebManager.cs" />
+    <Compile Include="Windows\SalesCars\AddSalesCar.xaml.cs">
       <DependentUpon>AddSalesCar.xaml</DependentUpon>
     </Compile>
     <Compile Include="Code\Cars\Car.cs" />
-    <Compile Include="Code\Cars\JsonCar.cs" />
+    <Compile Include="Code\JSON\JSONCar.cs" />
     <Compile Include="Code\Constants.cs" />
     <Compile Include="Windows\EditPersonWindow.xaml.cs">
       <DependentUpon>EditPersonWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\EditSalesCar.xaml.cs">
+    <Compile Include="Windows\SalesCars\EditSalesCar.xaml.cs">
       <DependentUpon>EditSalesCar.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\ExpiredContractsWindow.xaml.cs">
+    <Compile Include="Windows\Information\ExpiredContractsWindow.xaml.cs">
       <DependentUpon>ExpiredContractsWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\ExtraPapers.xaml.cs">
+    <Compile Include="Windows\Accounts\ExtraPapers.xaml.cs">
       <DependentUpon>ExtraPapers.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\InformationWindow.xaml.cs">
+    <Compile Include="Windows\Information\InformationWindow.xaml.cs">
       <DependentUpon>InformationWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="LopezDataDataSet.cs">
       <DependentUpon>LopezDataDataSet.xsd</DependentUpon>
     </Compile>
-    <Compile Include="Windows\VINDecoderWindow.xaml.cs">
+    <Compile Include="Windows\SalesCars\VINDecoderWindow.xaml.cs">
       <DependentUpon>VINDecoderWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Code\Logger.cs" />
@@ -139,26 +148,25 @@
     </Compile>
     <Compile Include="Code\MSEdit.cs" />
     <Compile Include="Code\PaperInfo.cs" />
-    <Compile Include="Windows\PapersWindow.xaml.cs">
+    <Compile Include="Windows\Information\PapersWindow.xaml.cs">
       <DependentUpon>PapersWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Code\Person.cs" />
-    <Compile Include="Windows\EntryWindow.xaml.cs">
+    <Compile Include="Windows\Accounts\EntryWindow.xaml.cs">
       <DependentUpon>EntryWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Code\Cars\SalesCar.cs" />
-    <Compile Include="Windows\PaymentEdit.xaml.cs">
-      <DependentUpon>PaymentEdit.xaml</DependentUpon>
+    <Compile Include="Windows\Accounts\EditPayment.xaml.cs">
+      <DependentUpon>EditPayment.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Windows\SalesCarsWindow.xaml.cs">
+    <Compile Include="Windows\SalesCars\SalesCarsWindow.xaml.cs">
       <DependentUpon>SalesCarsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\SellCarWindow.xaml.cs">
       <DependentUpon>SellCarWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Code\Storage.cs" />
-    <Compile Include="Code\VINDecoder.cs" />
-    <Page Include="Windows\AddSalesCar.xaml">
+    <Page Include="Windows\SalesCars\AddSalesCar.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -166,27 +174,27 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Windows\EditSalesCar.xaml">
+    <Page Include="Windows\SalesCars\EditSalesCar.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Windows\EntryWindow.xaml">
+    <Page Include="Windows\Accounts\EntryWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Windows\ExpiredContractsWindow.xaml">
+    <Page Include="Windows\Information\ExpiredContractsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Windows\ExtraPapers.xaml">
+    <Page Include="Windows\Accounts\ExtraPapers.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Windows\InformationWindow.xaml">
+    <Page Include="Windows\Information\InformationWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Windows\VINDecoderWindow.xaml">
+    <Page Include="Windows\SalesCars\VINDecoderWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -202,15 +210,15 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Windows\PapersWindow.xaml">
+    <Page Include="Windows\Information\PapersWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Windows\PaymentEdit.xaml">
+    <Page Include="Windows\Accounts\EditPayment.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Windows\SalesCarsWindow.xaml">
+    <Page Include="Windows\SalesCars\SalesCarsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -307,5 +315,12 @@
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\LibGit2Sharp.NativeBinaries.2.0.267\build\net46\LibGit2Sharp.NativeBinaries.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\LibGit2Sharp.NativeBinaries.2.0.267\build\net46\LibGit2Sharp.NativeBinaries.props'))" />
+  </Target>
 </Project>

@@ -7,8 +7,11 @@
         public const decimal TAG_COST = 10;
         public const decimal MONTHLY_PAYMENT = 300;
         public const decimal WARRANTY = 20;
+        public const string BUSINESS = "Lopez Auto Sales";
+        public const string EMAIL = "lopezauto@outlook.com";
 
-        public static string[] States = new string[] { "Alabama",
+        public static string[] States = new string[] {
+         "Alabama",
          "Alaska",
         "Arizona",
         "Arkansas",
