@@ -1,15 +1,64 @@
-﻿namespace Lopez_Auto_Sales
+﻿namespace Lopez_Auto_Sales.Static
 {
+    /// <summary>
+    /// Class for holding any project constants.
+    /// </summary>
     public static class Constants
     {
+        /// <summary>
+        /// The tax rate
+        /// </summary>
         public const decimal TAX_RATE = 8.5m;
-        public const decimal LIEN_COST = 20;
-        public const decimal TAG_COST = 10;
-        public const decimal MONTHLY_PAYMENT = 300;
-        public const decimal WARRANTY = 20;
-        public const string BUSINESS = "Lopez Auto Sales";
-        public const string EMAIL = "lopezauto@outlook.com";
 
+        /// <summary>
+        /// The lien cost
+        /// </summary>
+        public const decimal LIEN_COST = 20;
+
+        /// <summary>
+        /// The tag cost
+        /// </summary>
+        public const decimal TAG_COST = 10;
+
+        /// <summary>
+        /// The monthly payment
+        /// </summary>
+        public const decimal MONTHLY_PAYMENT = 300;
+
+        /// <summary>
+        /// The warranty
+        /// </summary>
+        public const decimal WARRANTY = 20;
+
+        /// <summary>
+        ///
+        /// </summary>
+        public struct DealerInfo
+        {
+            /// <summary>
+            /// The name
+            /// </summary>
+            public const string NAME = "Lopez Auto Sales";
+
+            /// <summary>
+            /// The owner
+            /// </summary>
+            public const string OWNER = "Gabriel Lopez";
+
+            /// <summary>
+            /// The number
+            /// </summary>
+            public const int NUMBER = 2518;
+
+            /// <summary>
+            /// The email
+            /// </summary>
+            public const string EMAIL = "lopezauto@outlook.com";
+        }
+
+        /// <summary>
+        /// The states
+        /// </summary>
         public static string[] States = new string[] {
          "Alabama",
          "Alaska",

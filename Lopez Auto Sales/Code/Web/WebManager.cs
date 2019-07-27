@@ -1,4 +1,5 @@
 ﻿using Lopez_Auto_Sales.JSON;
+using Lopez_Auto_Sales.Static;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
@@ -9,28 +10,87 @@ using System.IO;
 using System.Linq;
 using System.Net;
 
-namespace Lopez_Auto_Sales
+namespace Lopez_Auto_Sales.Web
 {
+    /// <summary>
+    /// Handles website operations.
+    /// </summary>
     internal static class WebManager
     {
+        /// <summary>
+        /// The URL for decoding VIN's.
+        /// </summary>
         private const string DECODE_URL = "https://vpic.nhtsa.dot.gov/api/vehicles/DecodeVin/{0}?format=json";
+
+        /// <summary>
+        /// The exif orientation identifier
+        /// </summary>
         private const int exifOrientationID = 0x112;
+
+        /// <summary>
+        /// The img size
+        /// </summary>
         private const int IMG_SIZE = 1080;
+
+        /// <summary>
+        /// The serializer settings
+        /// </summary>
         private static readonly JsonSerializerSettings SerializerSettings = new JsonSerializerSettings { ContractResolver = new CamelCasePropertyNamesContractResolver() };
 
+        /// <summary>
+        /// A struct containing path information.
+        /// </summary>
         internal struct Paths
         {
+            /// <summary>
+            /// The root data folder.
+            /// </summary>
             public const string ROOT = "Data/";
+
+            /// <summary>
+            /// The input folder.
+            /// </summary>
             public const string INPUT = "Data/Input/";
+
+            /// <summary>
+            /// The output folder.
+            /// </summary>
             public const string OUTPUT = "Data/Output/";
+
+            /// <summary>
+            /// The output images folder.
+            /// </summary>
             public const string IMAGES = "Data/Output/CarImages/";
+
+            /// <summary>
+            /// The json data folder.
+            /// </summary>
             public const string JSON = "Data/Output/CarData/";
+
+            /// <summary>
+            /// The car image logs folder.
+            /// </summary>
             public const string LOGS = "Data/Logs/";
+
+            /// <summary>
+            /// The json file name
+            /// </summary>
             public const string JSON_FILE = "cars.json";
+
+            /// <summary>
+            /// The image type
+            /// </summary>
             public const string IMAGE_TYPE = ".jpg";
+
+            /// <summary>
+            /// The directories
+            /// </summary>
             public static readonly string[] Directories = { ROOT, INPUT, OUTPUT, IMAGES, JSON, LOGS };
         }
 
+        /// <summary>
+        /// Initializes this instance.
+        /// </summary>
         internal static void Init()
         {
             foreach (string directory in Paths.Directories)
@@ -38,6 +98,10 @@ namespace Lopez_Auto_Sales
                     Directory.CreateDirectory(directory);
         }
 
+        /// <summary>
+        /// Rotates the provided image according to exif data.
+        /// </summary>
+        /// <param name="img">The img.</param>
         private static void ExifRotate(this Image img)
         {
             if (!img.PropertyIdList.Contains(exifOrientationID))
@@ -59,6 +123,11 @@ namespace Lopez_Auto_Sales
                 img.RotateFlip(rot);
         }
 
+        /// <summary>
+        /// Processes the image. Resizes and rotates.
+        /// </summary>
+        /// <param name="path">The path.</param>
+        /// <param name="vin">The vin.</param>
         private static void ProcessImage(string path, string vin)
         {
             Image image = new Bitmap(path);
@@ -68,6 +137,11 @@ namespace Lopez_Auto_Sales
             resize.Save(Paths.IMAGES + vin + Paths.IMAGE_TYPE, ImageFormat.Jpeg);
         }
 
+        /// <summary>
+        /// Gets the json information.
+        /// </summary>
+        /// <param name="salesCar">The sales car.</param>
+        /// <returns></returns>
         internal static JSONCar GetInfo(SalesCar salesCar)
         {
             if (File.Exists(Paths.JSON + Paths.JSON_FILE))
@@ -87,6 +161,50 @@ namespace Lopez_Auto_Sales
             return jsonCar;
         }
 
+        /// <summary>
+        /// Gets the car basics from json.
+        /// </summary>
+        /// <param name="json">The json.</param>
+        /// <returns></returns>
+        internal static Car GetBasics(this JSONClass json)
+        {
+            try
+            {
+                int year = int.Parse(json.Results.First<JSONResult>(j => j.Variable == "Model Year").Value);
+                string make = json.Results.First<JSONResult>(j => j.Variable == "Make").Value.ToCapital();
+                string model = json.Results.First<JSONResult>(j => j.Variable == "Model").Value.ToCapital();
+
+                return new Car(year, make, model);
+            }
+            catch { }
+            return null;
+        }
+
+        /// <summary>
+        /// Determines whether [has error code].
+        /// </summary>
+        /// <param name="json">The json.</param>
+        /// <returns>
+        ///   <c>true</c> if [has error code] [the specified json]; otherwise, <c>false</c>.
+        /// </returns>
+        internal static bool HasErrorCode(this JSONClass json)
+        {
+            try
+            {
+                int code = int.Parse(json.Results.First<JSONResult>(j => j.Variable == "Error Code").Value);
+
+                if (code == 0)
+                    return false;
+            }
+            catch { }
+            return true;
+        }
+
+        /// <summary>
+        /// Decodes the vin.
+        /// </summary>
+        /// <param name="VIN">The vin.</param>
+        /// <returns></returns>
         internal static JSONClass DecodeVIN(string VIN)
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(string.Format(DECODE_URL, VIN));
@@ -99,6 +217,10 @@ namespace Lopez_Auto_Sales
             }
         }
 
+        /// <summary>
+        /// Processes the API from jsonCar to jsonClass.
+        /// </summary>
+        /// <param name="jsonCar">The json car.</param>
         private static void ProcessAPI(this JSONCar jsonCar)
         {
             JSONClass json = DecodeVIN(jsonCar.VIN);
@@ -123,12 +245,18 @@ namespace Lopez_Auto_Sales
             }
         }
 
+        /// <summary>
+        /// Deletes the images in output folder.
+        /// </summary>
         private static void DeleteImages()
         {
             foreach (string file in Directory.GetFiles(Paths.IMAGES))
                 File.Delete(file);
         }
 
+        /// <summary>
+        /// Checks for updates to website files. Utilizes the gitmanager class.
+        /// </summary>
         public static void CheckForUpdates()
         {
             DeleteImages();
@@ -146,12 +274,17 @@ namespace Lopez_Auto_Sales
                     for (int i = cars.Count - 1; i >= 0; i--)
                     {
                         JSONCar car = cars[i];
-                        if (!Storage.SalesCars.Any(match => match.VIN == car.VIN))
-                            cars.Remove(car);
-                        else
+                        if (Storage.SalesCars.Any(match => match.VIN == car.VIN))
                         {
                             SalesCar salesCar = Storage.SalesCars.Find(match => match.VIN == car.VIN);
-                            car.Update(salesCar);
+                            cars[i].Update(salesCar);
+                        }
+                        else
+                        {
+                            cars.Remove(car);
+
+                            if (File.Exists(Paths.INPUT + car.VIN + Paths.IMAGE_TYPE))
+                                File.Move(Paths.INPUT + car.VIN + Paths.IMAGE_TYPE, Paths.LOGS + car.VIN + Paths.IMAGE_TYPE);
                         }
                     }
                 }
@@ -162,17 +295,23 @@ namespace Lopez_Auto_Sales
                 string path = Paths.INPUT + car.VIN + Paths.IMAGE_TYPE;
                 if (!File.Exists(path))
                     continue;
+
+                ProcessImage(path, car.VIN);
+
                 //has already been checked
                 if (cars.Any(match => match.VIN == car.VIN))
                     continue;
 
-                ProcessImage(path, car.VIN);
                 JSONCar jsonCar = new JSONCar(car);
+                if (car.ByOwner)
+                    jsonCar.Extras.Add(new JSONExtra("Note", "For Sale by Owner"));
                 jsonCar.ProcessAPI();
                 cars.Add(jsonCar);
             }
             JSONFile output = new JSONFile(cars);
             File.WriteAllText(Paths.JSON + Paths.JSON_FILE, JsonConvert.SerializeObject(output, Formatting.Indented, SerializerSettings));
+            GitManager gitManager = new GitManager();
+            gitManager.TryPushChanges();
         }
     }
 }

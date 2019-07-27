@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Lopez_Auto_Sales"
         mc:Ignorable="d"
-        Title="Add Car" Height="249.198" Width="384.586" Background="#FF656565" ResizeMode="NoResize">
+        Title="Add Car" Height="271.006" Width="384.586" Background="#FF656565" ResizeMode="NoResize">
     <Window.Resources>
         <ObjectDataProvider
     ObjectInstance="{x:Type Colors}"
@@ -33,9 +33,10 @@
         <TextBox x:Name="PriceBox" HorizontalAlignment="Left" Height="23" Margin="235,14,-69.4,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="128" />
         <TextBox x:Name="LowestPriceBox" HorizontalAlignment="Left" Height="23" Margin="277,45,-69.4,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="86" />
         <TextBox x:Name="BoughtPriceBox" HorizontalAlignment="Left" Height="23" Margin="277,75,-69.4,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="86" />
-        <Button x:Name="AddButton" Content="+Add Car" HorizontalAlignment="Left" Margin="10,178,0,0" VerticalAlignment="Top" Width="100" Click="AddButton_Click" />
+        <Button x:Name="AddButton" Content="+Add Car" HorizontalAlignment="Left" Margin="188,202,0,0" VerticalAlignment="Top" Width="174" Click="AddButton_Click" />
         <CheckBox x:Name="SalvageCheckBox" Content="Salvage" HorizontalAlignment="Left" Margin="302,108,0,0" VerticalAlignment="Top" />
         <TextBox x:Name="WarrantyBox" HorizontalAlignment="Left" Height="23" Margin="302,174,0,0" TextWrapping="Wrap" Text="20" VerticalAlignment="Top" Width="61" TextAlignment="Center" />
         <CheckBox x:Name="WarrantyCheckBox" Content="Print Warranty %" HorizontalAlignment="Left" Margin="188,176,0,0" VerticalAlignment="Top" IsChecked="True" />
+        <CheckBox x:Name="ByOwnerCheckBox" Content="For Sale By Owner" HorizontalAlignment="Left" Margin="10,176,0,0" VerticalAlignment="Top" IsChecked="False" />
     </Grid>
 </Window>

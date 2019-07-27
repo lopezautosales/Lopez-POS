@@ -5,17 +5,17 @@ using System.Windows;
 using excel = Microsoft.Office.Interop.Excel;
 using word = Microsoft.Office.Interop.Word;
 
-namespace Lopez_Auto_Sales
+namespace Lopez_Auto_Sales.Static
 {
+    /// <summary>
+    /// Class for handling any Microsoft Office operations.
+    /// </summary>
     internal static class MSEdit
     {
-        public struct DealerInfo
-        {
-            public const string DealerName = "Lopez Auto Sales";
-            public const string Dealer = "Gabriel Lopez";
-            public const int DealerNumber = 2518;
-        }
-
+        /// <summary>
+        /// Prints the contract.
+        /// </summary>
+        /// <param name="paperInfo">The paper information.</param>
         internal static void PrintContract(PaperInfo paperInfo)
         {
             string docPath = "Documents\\Contract.docx";
@@ -213,11 +213,20 @@ namespace Lopez_Auto_Sales
             application.Quit();
         }
 
+        /// <summary>
+        /// Prints the warranty.
+        /// </summary>
+        /// <param name="paperInfo">The paper information.</param>
         internal static void PrintWarranty(PaperInfo paperInfo)
         {
             PrintWarranty(paperInfo.Car, paperInfo.Warranty);
         }
 
+        /// <summary>
+        /// Prints the warranty.
+        /// </summary>
+        /// <param name="car">The car.</param>
+        /// <param name="warranty">The warranty.</param>
         internal static void PrintWarranty(Car car, int warranty)
         {
             string docPath = "Documents\\Warranty.docx";
@@ -261,6 +270,10 @@ namespace Lopez_Auto_Sales
             application.Quit();
         }
 
+        /// <summary>
+        /// Prints the transfer agreement.
+        /// </summary>
+        /// <param name="paperInfo">The paper information.</param>
         internal static void PrintTransferAgreement(PaperInfo paperInfo)
         {
             string docPath = "Documents\\Agreement.docx";
@@ -318,11 +331,11 @@ namespace Lopez_Auto_Sales
                         #region Seller/Buyer
 
                         case "[Dealer]":
-                            shape.TextFrame.ContainingRange.Text = DealerInfo.DealerName;
+                            shape.TextFrame.ContainingRange.Text = Constants.DealerInfo.NAME;
                             break;
 
                         case "[Seller]":
-                            shape.TextFrame.ContainingRange.Text = DealerInfo.Dealer;
+                            shape.TextFrame.ContainingRange.Text = Constants.DealerInfo.OWNER;
                             break;
 
                         #endregion Seller/Buyer
@@ -336,6 +349,10 @@ namespace Lopez_Auto_Sales
             application.Quit();
         }
 
+        /// <summary>
+        /// Prints the legal.
+        /// </summary>
+        /// <param name="paperInfo">The paper information.</param>
         internal static void PrintLegal(PaperInfo paperInfo)
         {
             string docPath = "Documents\\Legal.docx";
@@ -442,6 +459,10 @@ namespace Lopez_Auto_Sales
             application.Quit();
         }
 
+        /// <summary>
+        /// Prints the lien.
+        /// </summary>
+        /// <param name="paperInfo">The paper information.</param>
         internal static void PrintLien(PaperInfo paperInfo)
         {
             string docPath = "Documents\\Lien Release.docx";
@@ -501,6 +522,13 @@ namespace Lopez_Auto_Sales
             application.Quit();
         }
 
+        /// <summary>
+        /// Prints the receipt.
+        /// </summary>
+        /// <param name="person">The person.</param>
+        /// <param name="car">The car.</param>
+        /// <param name="index">The index.</param>
+        /// <param name="due">The due.</param>
         internal static void PrintReceipt(Person person, PaymentCar car, int index = 0, decimal due = 0)
         {
             string docPath = "Documents\\Statement_Empty.xlsx";
@@ -544,6 +572,11 @@ namespace Lopez_Auto_Sales
                 PrintReceipt(person, car, index, due);
         }
 
+        /// <summary>
+        /// Prints the papers.
+        /// </summary>
+        /// <param name="paperInfo">The paper information.</param>
+        /// <param name="legal">if set to <c>true</c> [legal].</param>
         internal static void PrintPapers(PaperInfo paperInfo, bool legal = false)
         {
             PrintContract(paperInfo);
@@ -555,6 +588,11 @@ namespace Lopez_Auto_Sales
                 PrintLien(paperInfo);
         }
 
+        /// <summary>
+        /// Adds the end of year.
+        /// </summary>
+        /// <param name="paperInfo">The paper information.</param>
+        /// <param name="boughtPrice">The bought price.</param>
         internal static void AddEndOfYear(PaperInfo paperInfo, decimal boughtPrice)
         {
             string docPath = "Documents\\EndOfYear.xlsx";

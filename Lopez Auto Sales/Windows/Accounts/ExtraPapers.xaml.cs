@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Lopez_Auto_Sales.Static;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -7,12 +8,34 @@ namespace Lopez_Auto_Sales
     /// <summary>
     /// Interaction logic for ExtraPapers.xaml
     /// </summary>
+    /// <seealso cref="System.Windows.Window" />
+    /// <seealso cref="System.Windows.Markup.IComponentConnector" />
     public partial class ExtraPapers : Window
     {
+        /// <summary>
+        /// The papers
+        /// </summary>
         internal List<string> papers = new List<string>();
+        /// <summary>
+        /// Gets or sets the name of the person.
+        /// </summary>
+        /// <value>
+        /// The name of the person.
+        /// </value>
         private string PersonName { get; set; }
+        /// <summary>
+        /// Gets or sets the vin.
+        /// </summary>
+        /// <value>
+        /// The vin.
+        /// </value>
         private string VIN { get; set; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ExtraPapers"/> class.
+        /// </summary>
+        /// <param name="personName">Name of the person.</param>
+        /// <param name="vin">The vin.</param>
         public ExtraPapers(string personName, string vin)
         {
             InitializeComponent();
@@ -20,6 +43,11 @@ namespace Lopez_Auto_Sales
             VIN = vin;
         }
 
+        /// <summary>
+        /// Handles the Click event of the PrintButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void PrintButton_Click(object sender, RoutedEventArgs e)
         {
             if (papers.Count == 0)
@@ -47,6 +75,11 @@ namespace Lopez_Auto_Sales
             Close();
         }
 
+        /// <summary>
+        /// Handles the Checked event of the CheckBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void CheckBox_Checked(object sender, RoutedEventArgs e)
         {
             CheckBox checkBox = sender as CheckBox;
@@ -62,6 +95,11 @@ namespace Lopez_Auto_Sales
             }
         }
 
+        /// <summary>
+        /// Handles the Loaded event of the Window control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             Title = "Extra Papers for " + PersonName;

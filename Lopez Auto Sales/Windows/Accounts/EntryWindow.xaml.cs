@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Lopez_Auto_Sales.Static;
+using System;
 using System.Windows;
 
 namespace Lopez_Auto_Sales
@@ -6,11 +7,30 @@ namespace Lopez_Auto_Sales
     /// <summary>
     /// Interaction logic for EntrytWindow.xaml
     /// </summary>
+    /// <seealso cref="System.Windows.Window" />
+    /// <seealso cref="System.Windows.Markup.IComponentConnector" />
     public partial class EntryWindow : Window
     {
+        /// <summary>
+        /// Gets the car.
+        /// </summary>
+        /// <value>
+        /// The car.
+        /// </value>
         public PaymentCar Car { get; private set; }
+        /// <summary>
+        /// Gets the person.
+        /// </summary>
+        /// <value>
+        /// The person.
+        /// </value>
         public Person Person { get; private set; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EntryWindow"/> class.
+        /// </summary>
+        /// <param name="owner">The owner.</param>
+        /// <param name="paymentCar">The payment car.</param>
         public EntryWindow(Person owner, PaymentCar paymentCar)
         {
             InitializeComponent();
@@ -18,13 +38,16 @@ namespace Lopez_Auto_Sales
             Person = owner;
         }
 
+        /// <summary>
+        /// Updates the information.
+        /// </summary>
         private void UpdateInfo()
         {
             dueLabel.Text = "Total Due: " + Car.Due.ToString("C");
             balanceLabel.Text = "Balance: " + Car.Balance.ToString("C");
-            expirationLabel.Text = "Contract Expiration Date: " + Car.ContractExpirationDate().ToString("MM/dd/yyyy");
-            daysLabel.Text = "Days From Last Payment: " + Car.DaysSinceLastPayment();
-            lateLabel.Text = "Late Due: " + Car.LateDue().ToString("C");
+            expirationLabel.Text = "Contract Expiration Date: " + Car.GetContractExpirationDate().ToString("MM/dd/yyyy");
+            daysLabel.Text = "Days From Last Payment: " + Car.GetDaysSinceLastPayment();
+            lateLabel.Text = "Late Due: " + Car.GetLateDue().ToString("C");
 
             if (Car.Balance == 0)
                 PaymentButton.Content = "Close Entry";
@@ -32,6 +55,11 @@ namespace Lopez_Auto_Sales
                 PaymentButton.Content = "+ Add Payment";
         }
 
+        /// <summary>
+        /// Handles the Loaded event of the EntryWindow control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void EntryWindow_Loaded(object sender, RoutedEventArgs e)
         {
             PaymentsGrid.ItemsSource = null;
@@ -39,6 +67,11 @@ namespace Lopez_Auto_Sales
             UpdateInfo();
         }
 
+        /// <summary>
+        /// Handles the Click event of the PaymentButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void PaymentButton_Click(object sender, RoutedEventArgs e)
         {
             if (Car.Balance == 0)
@@ -75,6 +108,11 @@ namespace Lopez_Auto_Sales
             PaymentTextBox.Text = String.Empty;
         }
 
+        /// <summary>
+        /// Handles the Click event of the EditButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void EditButton_Click(object sender, RoutedEventArgs e)
         {
             if (PaymentsGrid.SelectedItem == null)
@@ -111,11 +149,21 @@ namespace Lopez_Auto_Sales
             }
         }
 
+        /// <summary>
+        /// Handles the Click event of the ReceiptButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void ReceiptButton_Click(object sender, RoutedEventArgs e)
         {
             MSEdit.PrintReceipt(Person, Car);
         }
 
+        /// <summary>
+        /// Handles the Click event of the PapersButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void PapersButton_Click(object sender, RoutedEventArgs e)
         {
             ExtraPapers extraPapers = new ExtraPapers(Person.Name, Car.VIN);

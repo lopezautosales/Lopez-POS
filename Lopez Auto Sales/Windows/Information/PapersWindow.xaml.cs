@@ -1,17 +1,28 @@
-﻿using System.Windows;
+﻿using Lopez_Auto_Sales.Static;
+using System.Windows;
 
 namespace Lopez_Auto_Sales
 {
     /// <summary>
     /// Interaction logic for PapersWindow.xaml
     /// </summary>
+    /// <seealso cref="System.Windows.Window" />
+    /// <seealso cref="System.Windows.Markup.IComponentConnector" />
     public partial class PapersWindow : Window
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PapersWindow"/> class.
+        /// </summary>
         public PapersWindow()
         {
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Handles the Click event of the PrintButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void PrintButton_Click(object sender, RoutedEventArgs e)
         {
             if (PaperInfoGrid.SelectedItem == null)
@@ -34,6 +45,11 @@ namespace Lopez_Auto_Sales
                 MSEdit.PrintLien(paperInfo);
         }
 
+        /// <summary>
+        /// Handles the Loaded event of the Window control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             PaperInfoGrid.ItemsSource = null;

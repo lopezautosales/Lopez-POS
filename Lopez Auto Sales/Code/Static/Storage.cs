@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Threading;
 
-namespace Lopez_Auto_Sales
+namespace Lopez_Auto_Sales.Static
 {
     internal static class Storage
     {
@@ -62,8 +62,9 @@ namespace Lopez_Auto_Sales
                 decimal boughtPrice = (decimal)car["BoughtPrice"];
                 bool salvage = (bool)car["Salvage"];
                 bool extraKey = (bool)car["ExtraKey"];
+                bool byOwner = (bool)car["ByOwner"];
 
-                cars.Add(new SalesCar(year, make, model, vin, mileage, price, lowestPrice, date, color, boughtPrice, salvage, extraKey));
+                cars.Add(new SalesCar(year, make, model, vin, mileage, price, lowestPrice, date, color, boughtPrice, salvage, extraKey, byOwner));
             }
         }
 
@@ -165,7 +166,6 @@ namespace Lopez_Auto_Sales
         /// </returns>
         internal static int AddPerson(string name, string phone, string full_Address)
         {
-            Logger.AddPerson(name, phone, full_Address);
             return (int)peopleAdapter.InsertQuery(name, full_Address, phone);
         }
 
@@ -174,7 +174,6 @@ namespace Lopez_Auto_Sales
         /// <param name="newPerson">The new person.</param>
         internal static void UpdatePerson(Person person, Person newPerson)
         {
-            Logger.UpdatePerson(person, newPerson);
             People[People.IndexOf(person)] = newPerson;
             peopleAdapter.Update(newPerson.Name, newPerson.Full_Address, newPerson.Phone, person.PersonID, person.Name, person.Full_Address, person.Phone);
         }
@@ -183,7 +182,6 @@ namespace Lopez_Auto_Sales
         /// <param name="person">The person.</param>
         internal static void RemovePerson(Person person)
         {
-            Logger.RemovePerson(person);
             People.Remove(person);
             peopleAdapter.Delete(person.PersonID, person.Name, person.Full_Address, person.Phone);
         }
@@ -197,11 +195,10 @@ namespace Lopez_Auto_Sales
         /// <param name="newCar">The new car.</param>
         internal static void EditSalesCar(SalesCar car, SalesCar newCar)
         {
-            Logger.EditSalesCar(car, newCar);
             salesCarAdapter.Update(newCar.VIN, newCar.Year, newCar.Make, newCar.Model, newCar.Color, newCar.Mileage, newCar.Price,
-                newCar.LowestPrice, newCar.ListDate, newCar.BoughtPrice, newCar.ExtraKey, newCar.Salvage,
+                newCar.LowestPrice, newCar.ListDate, newCar.BoughtPrice, newCar.ExtraKey, newCar.Salvage, newCar.ByOwner,
                 car.VIN, car.Year, car.Make, car.Model, car.Color, car.Mileage, car.Price,
-                car.LowestPrice, car.ListDate, car.BoughtPrice, car.ExtraKey, car.Salvage);
+                car.LowestPrice, car.ListDate, car.BoughtPrice, car.ExtraKey, car.Salvage, car.ByOwner);
             SalesCars[SalesCars.IndexOf(car)] = newCar;
         }
 
@@ -209,8 +206,8 @@ namespace Lopez_Auto_Sales
         /// <param name="car">The car.</param>
         internal static void RemoveSalesCar(SalesCar car)
         {
-            Logger.RemoveSalesCar(car);
-            salesCarAdapter.Delete(car.VIN, car.Year, car.Make, car.Model, car.Color, car.Mileage, car.Price, car.LowestPrice, car.ListDate, car.BoughtPrice, car.ExtraKey, car.Salvage);
+            Logger.LogInventory(false, car);
+            salesCarAdapter.Delete(car.VIN, car.Year, car.Make, car.Model, car.Color, car.Mileage, car.Price, car.LowestPrice, car.ListDate, car.BoughtPrice, car.ExtraKey, car.Salvage, car.ByOwner);
             SalesCars.Remove(car);
         }
 
@@ -218,8 +215,8 @@ namespace Lopez_Auto_Sales
         /// <param name="car">The car.</param>
         internal static void AddSalesCar(SalesCar car)
         {
-            Logger.AddSalesCar(car);
-            salesCarAdapter.Insert(car.VIN, car.Year, car.Make, car.Model, car.Color, car.Mileage, car.Price, car.LowestPrice, car.ListDate, car.BoughtPrice, car.ExtraKey, car.Salvage);
+            Logger.LogInventory(true, car);
+            salesCarAdapter.Insert(car.VIN, car.Year, car.Make, car.Model, car.Color, car.Mileage, car.Price, car.LowestPrice, car.ListDate, car.BoughtPrice, car.ExtraKey, car.Salvage, car.ByOwner);
             SalesCars.Add(car);
         }
 
@@ -230,9 +227,9 @@ namespace Lopez_Auto_Sales
         /// <summary>Removes the payment.</summary>
         /// <param name="payment">The payment.</param>
         /// <param name="reason">The reason.</param>
-        internal static void RemovePayment(Payment payment, string reason)
+        internal static void RemovePayment(string person, string car, Payment payment, string reason)
         {
-            Logger.RemovePayment(payment, reason);
+            Logger.LogRemovePayment(person, car, payment, reason);
             paymentAdapter.Delete(payment.PaymentID, payment.CarID, payment.Date, payment.Amount, payment.IsDownPayment);
             removedPaymentAdapter.Insert(payment.CarID, payment.Date, payment.Amount, payment.IsDownPayment, reason);
         }
@@ -242,9 +239,9 @@ namespace Lopez_Auto_Sales
         /// <param name="date">The date.</param>
         /// <param name="amount">The amount.</param>
         /// <param name="reason">The reason.</param>
-        internal static void EditPayment(Payment payment, DateTime date, decimal amount, string reason)
+        internal static void EditPayment(string person, string car, Payment payment, DateTime date, decimal amount, string reason)
         {
-            Logger.EditPayment(payment, date, amount, reason);
+            Logger.LogEditPayment(person, car, payment, date, amount, reason);
             paymentAdapter.Update(payment.CarID, date, amount, payment.IsDownPayment, payment.PaymentID, payment.CarID, payment.Date, payment.Amount, payment.IsDownPayment);
         }
 
@@ -260,7 +257,7 @@ namespace Lopez_Auto_Sales
         /// </returns>
         internal static int AddPayment(int carID, string person, string car, DateTime date, decimal amount, bool down)
         {
-            Logger.AddPayment(person, car, date, amount);
+            Logger.LogAddPayment(person, car, amount, down);
             return (int)paymentAdapter.InsertQuery(carID, date, amount, down);
         }
 
@@ -283,9 +280,8 @@ namespace Lopez_Auto_Sales
         /// <returns>
         ///   <para>The table ID</para>
         /// </returns>
-        internal static int AddPaymentCar(int personID, string person, int year, string make, string model, int? mileage, string VIN, decimal due, decimal average, DateTime now, string color)
+        internal static int AddPaymentCar(int personID, int year, string make, string model, int? mileage, string VIN, decimal due, decimal average, DateTime now, string color)
         {
-            Logger.AddPaymentCar(person, year, make, model, VIN, due, average, now, color);
             return (int)paymentCarAdapter.InsertQuery(personID, year, make, model, VIN, due, color, average, now, mileage);
         }
 
@@ -294,7 +290,6 @@ namespace Lopez_Auto_Sales
         /// <param name="car">The car.</param>
         internal static void RemovePaymentCar(Person person, PaymentCar car)
         {
-            Logger.RemovePaymentCar(person, car);
             People[People.IndexOf(person)].Cars.Remove(car);
             foreach (Payment p in car.Payments)
             {
@@ -307,22 +302,19 @@ namespace Lopez_Auto_Sales
 
         #region Sales
 
-        /// <summary>Adds the sales.</summary>
-        /// <param name="name">The name.</param>
-        /// <param name="vin">The vin.</param>
-        /// <param name="year">The year.</param>
-        /// <param name="make">The make.</param>
-        /// <param name="model">The model.</param>
-        /// <param name="color">The color.</param>
-        /// <param name="mileage">The mileage.</param>
-        /// <param name="sellingPrice">The selling price.</param>
+        /// <summary>
+        /// Adds the sale to storage.
+        /// </summary>
+        /// <param name="person">The name.</param>
+        /// <param name="car">The car.</param>
         /// <param name="boughtPrice">The bought price.</param>
         /// <param name="listDate">The list date.</param>
         /// <param name="boughtDate">The bought date.</param>
         /// <param name="salvage">if set to <c>true</c> [salvage].</param>
-        internal static void AddSales(string name, string vin, int year, string make, string model, string color, int? mileage, decimal sellingPrice, decimal boughtPrice, DateTime listDate, DateTime boughtDate, bool salvage)
+        internal static void AddSales(string person, Car car, decimal boughtPrice, DateTime listDate, DateTime boughtDate, bool salvage)
         {
-            salesAdapter.Insert(name, vin, year, make, model, color, mileage, sellingPrice, boughtPrice, listDate, boughtDate, salvage);
+            Logger.LogSale(person, car);
+            salesAdapter.Insert(person, car.VIN, car.Year, car.Make, car.Model, car.Color, car.Mileage, car.Value, boughtPrice, listDate, boughtDate, salvage);
         }
 
         #endregion Sales

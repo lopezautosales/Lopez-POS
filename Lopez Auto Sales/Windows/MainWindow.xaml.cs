@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Lopez_Auto_Sales.Static;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.NetworkInformation;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -12,18 +12,33 @@ namespace Lopez_Auto_Sales
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
+    /// <seealso cref="System.Windows.Window" />
+    /// <seealso cref="System.Windows.Markup.IComponentConnector" />
     public partial class MainWindow : Window
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MainWindow"/> class.
+        /// </summary>
         public MainWindow()
         {
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Handles the TextChanged event of the Search control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="TextChangedEventArgs"/> instance containing the event data.</param>
         internal void Search_TextChanged(object sender, TextChangedEventArgs e)
         {
             DisplayResults(NameText.Text, CarText.Text);
         }
 
+        /// <summary>
+        /// Displays the results.
+        /// </summary>
+        /// <param name="nameQuery">The name query.</param>
+        /// <param name="carQuery">The car query.</param>
         internal void DisplayResults(string nameQuery, string carQuery)
         {
             List<Person> people = new List<Person>();
@@ -61,6 +76,11 @@ namespace Lopez_Auto_Sales
             }
         }
 
+        /// <summary>
+        /// Handles the MouseDoubleClick event of the Item control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="MouseButtonEventArgs"/> instance containing the event data.</param>
         private void Item_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             TreeViewItem item = sender as TreeViewItem;
@@ -71,45 +91,55 @@ namespace Lopez_Auto_Sales
             entryWindow.Show();
         }
 
+        /// <summary>
+        /// Handles the Click event of the CarsButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void CarsButton_Click(object sender, RoutedEventArgs e)
         {
             SalesCars salesCars = new SalesCars();
             salesCars.Show();
         }
 
-        private bool IsConnectedInternet()
-        {
-            try
-            {
-                PingReply reply = new Ping().Send("google.com");
-                if (reply.Status == IPStatus.Success)
-                    return true;
-            }
-            catch { }
-            return false;
-        }
-
+        /// <summary>
+        /// Handles the Loaded event of the Main control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void Main_Loaded(object sender, RoutedEventArgs e)
         {
-            Storage.Init();
-            WebManager.Init();
-            if (!IsConnectedInternet())
-                MessageBox.Show(this, "You are not connected to the internet.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+            Initializer.Initialize();
             Search_TextChanged(null, null);
         }
 
+        /// <summary>
+        /// Handles the Click event of the SellCarButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void SellCarButton_Click(object sender, RoutedEventArgs e)
         {
             SellCarWindow carWindow = new SellCarWindow();
             carWindow.Show();
         }
 
+        /// <summary>
+        /// Handles the Click event of the InformationButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void InformationButton_Click(object sender, RoutedEventArgs e)
         {
             InformationWindow infoWindow = new InformationWindow();
             infoWindow.Show();
         }
 
+        /// <summary>
+        /// Handles the Click event of the EditPersonButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void EditPersonButton_Click(object sender, RoutedEventArgs e)
         {
             if (!(AccountsBox.SelectedItem is TreeView tree))
@@ -124,14 +154,6 @@ namespace Lopez_Auto_Sales
             {
                 Search_TextChanged(null, null);
             }
-        }
-    }
-
-    public static class Extensions
-    {
-        public static string ToCapital(this string message)
-        {
-            return System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(message.ToLower());
         }
     }
 }

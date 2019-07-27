@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Lopez_Auto_Sales"
         mc:Ignorable="d"
-        Title="Edit Car" Height="245.287" Width="387.6" Background="#FF656565" ResizeMode="NoResize" Loaded="Window_Loaded">
+        Title="Edit Car" Height="251.101" Width="387.6" Background="#FF656565" ResizeMode="NoResize" Loaded="Window_Loaded">
     <Window.Resources>
         <ObjectDataProvider
     ObjectInstance="{x:Type Colors}"
@@ -32,9 +32,10 @@
         <TextBox x:Name="PriceBox" HorizontalAlignment="Left" Height="23" Margin="235,14,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="128" />
         <TextBox x:Name="LowestPriceBox" HorizontalAlignment="Left" Height="23" Margin="277,45,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="86" />
         <TextBox x:Name="BoughtPriceBox" HorizontalAlignment="Left" Height="23" Margin="277,75,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="86" />
-        <Button x:Name="DeleteButton" Content="Delete Car" HorizontalAlignment="Left" Margin="263,183,0,0" VerticalAlignment="Top" Width="100" Click="DeleteButton_Click" />
-        <Button x:Name="SaveButton" Content="Save Car" HorizontalAlignment="Left" Margin="10,183,0,0" VerticalAlignment="Top" Width="100" Click="SaveButton_Click" />
+        <Button x:Name="DeleteButton" Content="Delete Car" HorizontalAlignment="Left" Margin="239,192,0,0" VerticalAlignment="Top" Width="124" Click="DeleteButton_Click" />
+        <Button x:Name="SaveButton" Content="Save Car" HorizontalAlignment="Left" Margin="10,192,0,0" VerticalAlignment="Top" Width="127" Click="SaveButton_Click" />
         <CheckBox x:Name="SalvageCheckBox" Content="Salvage" HorizontalAlignment="Left" Margin="295,106,0,0" VerticalAlignment="Top" />
         <Button x:Name="VINButton" Content="VIN" HorizontalAlignment="Left" Margin="10,13,0,0" VerticalAlignment="Top" Width="32" Height="23" Click="VINButton_Click" />
+        <CheckBox x:Name="ByOwnerCheckBox" Content="For Sale By Owner" HorizontalAlignment="Left" Margin="10,170,0,0" VerticalAlignment="Top" IsChecked="False" />
     </Grid>
 </Window>

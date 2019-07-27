@@ -2,19 +2,83 @@
 
 namespace Lopez_Auto_Sales
 {
+    /// <summary>
+    /// The person class.
+    /// </summary>
     public class Person
     {
+        /// <summary>
+        /// Gets the person identifier.
+        /// </summary>
+        /// <value>
+        /// The person identifier.
+        /// </value>
         public int PersonID { get; private set; }
+
+        /// <summary>
+        /// The cars
+        /// </summary>
         internal List<PaymentCar> Cars = new List<PaymentCar>();
+
+        /// <summary>
+        /// Gets the name.
+        /// </summary>
+        /// <value>
+        /// The name.
+        /// </value>
         public string Name { get; private set; }
+
+        /// <summary>
+        /// Gets the phone.
+        /// </summary>
+        /// <value>
+        /// The phone.
+        /// </value>
         public string Phone { get; private set; }
+
+        /// <summary>
+        /// Gets the address.
+        /// </summary>
+        /// <value>
+        /// The address.
+        /// </value>
         public string Address { get; private set; }
+
+        /// <summary>
+        /// Gets the city.
+        /// </summary>
+        /// <value>
+        /// The city.
+        /// </value>
         public string City { get; private set; }
+
+        /// <summary>
+        /// Gets the state.
+        /// </summary>
+        /// <value>
+        /// The state.
+        /// </value>
         public string State { get; private set; }
+
+        /// <summary>
+        /// Gets the zip.
+        /// </summary>
+        /// <value>
+        /// The zip.
+        /// </value>
         public string ZIP { get; private set; }
+
+        /// <summary>
+        /// Gets the full address.
+        /// </summary>
+        /// <value>
+        /// The full address.
+        /// </value>
         public string Full_Address { get { return Address + "," + City + "," + State + "," + ZIP; } }
 
-        /// <summary>Initializes a new instance of the <see cref="Person"/> class.</summary>
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Person" /> class.
+        /// </summary>
         /// <param name="personID">The person identifier.</param>
         /// <param name="name">The name.</param>
         /// <param name="phone">The phone.</param>
@@ -36,7 +100,9 @@ namespace Lopez_Auto_Sales
             PersonID = personID;
         }
 
-        /// <summary>Initializes a new instance of the <see cref="Person"/> class.</summary>
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Person" /> class.
+        /// </summary>
         /// <param name="personID">The person identifier.</param>
         /// <param name="name">The name.</param>
         /// <param name="phone">The phone.</param>
@@ -57,8 +123,12 @@ namespace Lopez_Auto_Sales
             PersonID = personID;
         }
 
-        /// <summary>Converts to string.</summary>
-        /// <returns>A <see cref="System.String"/> that represents this instance.</returns>
+        /// <summary>
+        /// Converts to string.
+        /// </summary>
+        /// <returns>
+        /// A <see cref="System.String" /> that represents this instance.
+        /// </returns>
         public override string ToString()
         {
             return Name;
