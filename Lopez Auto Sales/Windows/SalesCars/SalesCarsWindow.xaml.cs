@@ -29,7 +29,7 @@ namespace Lopez_Auto_Sales
             CarAdder carAdder = new CarAdder() { Owner = this, Topmost = true };
             if (carAdder.ShowDialog() == true)
             {
-                Storage.AddSalesCar(carAdder.Car);
+                Storage.SalesCars.AddSalesCar(carAdder.Car);
 
                 ReloadVehicles();
             }
@@ -51,7 +51,7 @@ namespace Lopez_Auto_Sales
         private void ReloadVehicles()
         {
             CarGrid.ItemsSource = null;
-            CarGrid.ItemsSource = Storage.SalesCars.OrderBy(c => c.Make);
+            CarGrid.ItemsSource = Storage.SalesCarsList.OrderBy(c => c.Make);
         }
 
         /// <summary>
@@ -115,11 +115,11 @@ namespace Lopez_Auto_Sales
             {
                 if (editCar.Car == null)
                 {
-                    Storage.RemoveSalesCar(car);
+                    Storage.SalesCars.RemoveSalesCar(car);
                 }
                 else
                 {
-                    Storage.EditSalesCar(car, editCar.Car);
+                    Storage.SalesCars.EditSalesCar(car, editCar.Car);
                 }
 
                 ReloadVehicles();

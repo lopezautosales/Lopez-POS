@@ -274,9 +274,9 @@ namespace Lopez_Auto_Sales.Web
                     for (int i = cars.Count - 1; i >= 0; i--)
                     {
                         JSONCar car = cars[i];
-                        if (Storage.SalesCars.Any(match => match.VIN == car.VIN))
+                        if (Storage.SalesCarsList.Any(match => match.VIN == car.VIN))
                         {
-                            SalesCar salesCar = Storage.SalesCars.Find(match => match.VIN == car.VIN);
+                            SalesCar salesCar = Storage.SalesCarsList.Find(match => match.VIN == car.VIN);
                             cars[i].Update(salesCar);
                         }
                         else
@@ -290,7 +290,7 @@ namespace Lopez_Auto_Sales.Web
                 }
             }
 
-            foreach (SalesCar car in Storage.SalesCars)
+            foreach (SalesCar car in Storage.SalesCarsList)
             {
                 string path = Paths.INPUT + car.VIN + Paths.IMAGE_TYPE;
                 if (!File.Exists(path))

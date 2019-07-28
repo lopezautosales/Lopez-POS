@@ -53,12 +53,12 @@ namespace Lopez_Auto_Sales
             if (papers.Count == 0)
                 return;
 
-            if (!Storage.Papers.Exists(paper => paper.Buyer.Name == PersonName && paper.Car.VIN == VIN))
+            if (!Storage.PapersList.Exists(paper => paper.Buyer.Name == PersonName && paper.Car.VIN == VIN))
             {
                 MessageBox.Show("Could not find paper info.", "Paper Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
-            PaperInfo paperInfo = Storage.Papers.Find(paper => paper.Buyer.Name == PersonName && paper.Car.VIN == VIN);
+            PaperInfo paperInfo = Storage.PapersList.Find(paper => paper.Buyer.Name == PersonName && paper.Car.VIN == VIN);
 
             if (papers.Contains("Contract"))
                 MSEdit.PrintContract(paperInfo);

@@ -76,7 +76,7 @@ namespace Lopez_Auto_Sales
         {
             if (CheckPerson(out Person newPerson))
             {
-                Storage.UpdatePerson(person, newPerson);
+                Storage.People.UpdatePerson(person, newPerson);
                 MessageBox.Show("Person Info Updated.");
                 DialogResult = true;
                 Close();

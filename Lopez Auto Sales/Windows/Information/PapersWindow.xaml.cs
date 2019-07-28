@@ -53,7 +53,7 @@ namespace Lopez_Auto_Sales
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             PaperInfoGrid.ItemsSource = null;
-            PaperInfoGrid.ItemsSource = Storage.Papers;
+            PaperInfoGrid.ItemsSource = Storage.PapersList;
         }
     }
 }

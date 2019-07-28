@@ -76,9 +76,9 @@ namespace Lopez_Auto_Sales
         {
             if (Car.Balance == 0)
             {
-                Storage.RemovePaymentCar(Person, Car);
+                Storage.PaymentCars.RemovePaymentCar(Person, Car);
                 if (Person.Cars.Count == 0)
-                    Storage.RemovePerson(Person);
+                    Storage.People.RemovePerson(Person);
                 if (Owner is MainWindow mainWindow)
                     mainWindow.Search_TextChanged(null, null);
                 Close();

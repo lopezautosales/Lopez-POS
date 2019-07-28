@@ -36,7 +36,7 @@ namespace Lopez_Auto_Sales
         {
             TotalDue = 0;
 
-            foreach (Person person in Storage.People)
+            foreach (Person person in Storage.PeopleList)
             {
                 foreach (PaymentCar car in person.Cars)
                 {

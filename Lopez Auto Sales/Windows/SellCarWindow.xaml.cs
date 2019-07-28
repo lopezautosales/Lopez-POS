@@ -246,7 +246,7 @@ namespace Lopez_Auto_Sales
         {
             PaperInfo paperInfo = new PaperInfo(DateTime.Now, buyer, CoBuyerBox.Text.ToCapital(), car, trade, down, TagCheckBox.IsChecked.Value, LienCheckBox.IsChecked.Value, OutOfStateCheckBox.IsChecked.Value, taxRate, warranty, average);
             MSEdit.PrintPapers(paperInfo, Balance != 0);
-            Storage.AddPaperInfo(paperInfo);
+            Storage.Papers.AddPaperInfo(paperInfo);
 
             if (Balance != 0)
                 AddPaymentCar(buyer, car, down, average);
@@ -254,8 +254,8 @@ namespace Lopez_Auto_Sales
             MSEdit.AddEndOfYear(paperInfo, boughtPrice);
             AddSale(buyer, car, boughtPrice);
 
-            if (Storage.SalesCars.Exists(c => c.VIN == car.VIN))
-                Storage.RemoveSalesCar(Storage.SalesCars.Find(c => c.VIN == car.VIN));
+            if (Storage.SalesCarsList.Exists(c => c.VIN == car.VIN))
+                Storage.SalesCars.RemoveSalesCar(Storage.SalesCarsList.Find(c => c.VIN == car.VIN));
         }
 
         /// <summary>
@@ -271,21 +271,21 @@ namespace Lopez_Auto_Sales
             Person person = null;
 
             //Find existing customer info
-            bool exists = Storage.People.Exists(p => p.Name == buyer.Name);
+            bool exists = Storage.PeopleList.Exists(p => p.Name == buyer.Name);
             if (exists)
             {
-                person = Storage.People.Find(p => p.Name == buyer.Name);
+                person = Storage.PeopleList.Find(p => p.Name == buyer.Name);
                 personID = person.PersonID;
                 Person newPerson = new Person(personID, buyer.Name, buyer.Phone, buyer.Full_Address, person.Cars);
                 if (!person.Equals(newPerson))
-                    Storage.UpdatePerson(person, newPerson);
+                    Storage.People.UpdatePerson(person, newPerson);
             }
             else
-                personID = Storage.AddPerson(buyer.Name, buyer.Phone, buyer.Full_Address);
+                personID = Storage.People.AddPerson(buyer.Name, buyer.Phone, buyer.Full_Address);
 
             //Get ID's
-            int carID = Storage.AddPaymentCar(personID, car.Year, car.Make, car.Model, car.Mileage, car.VIN, Due, average, DateTime.Now, car.Color);
-            int paymentID = Storage.AddPayment(carID, buyer.Name, car.ToString(), DateTime.Now, down, true);
+            int carID = Storage.PaymentCars.AddPaymentCar(personID, car.Year, car.Make, car.Model, car.Mileage, car.VIN, Due, average, DateTime.Now, car.Color);
+            int paymentID = Storage.Payments.AddPayment(carID, buyer.Name, car.ToString(), DateTime.Now, down, true);
 
             //Make Entry
             List<Payment> payments = new List<Payment>() { new Payment(paymentID, carID, DateTime.Now, down, true) };
@@ -293,9 +293,9 @@ namespace Lopez_Auto_Sales
 
             //Add to storage
             if (exists)
-                Storage.People[Storage.People.IndexOf(person)].Cars.Add(paymentCar);
+                Storage.PeopleList[Storage.PeopleList.IndexOf(person)].Cars.Add(paymentCar);
             else
-                Storage.People.Add(new Person(personID, buyer.Name, buyer.Phone, buyer.Full_Address, new List<PaymentCar>() { paymentCar }));
+                Storage.PeopleList.Add(new Person(personID, buyer.Name, buyer.Phone, buyer.Full_Address, new List<PaymentCar>() { paymentCar }));
 
             //Update main window's entries
             if (Owner is MainWindow mainWindow)
@@ -318,14 +318,14 @@ namespace Lopez_Auto_Sales
                 salvage = InCar.Salvage;
                 listDate = InCar.ListDate;
             }
-            else if (Storage.SalesCars.Exists(c => c.VIN == car.VIN))
+            else if (Storage.SalesCarsList.Exists(c => c.VIN == car.VIN))
             {
-                SalesCar salesCar = Storage.SalesCars.Find(c => c.VIN == car.VIN);
+                SalesCar salesCar = Storage.SalesCarsList.Find(c => c.VIN == car.VIN);
                 salvage = salesCar.Salvage;
                 listDate = salesCar.ListDate;
             }
 
-            Storage.AddSales(buyer.Name, car, boughtPrice, listDate, DateTime.Now, salvage);
+            Storage.Sales.AddSales(buyer.Name, car, boughtPrice, listDate, DateTime.Now, salvage);
         }
 
         /// <summary>
@@ -436,9 +436,9 @@ namespace Lopez_Auto_Sales
             StateBox.ItemsSource = null;
             VINBox.ItemsSource = null;
 
-            BuyerBox.ItemsSource = Storage.People;
+            BuyerBox.ItemsSource = Storage.PeopleList;
             StateBox.ItemsSource = Constants.States;
-            VINBox.ItemsSource = Storage.SalesCars;
+            VINBox.ItemsSource = Storage.SalesCarsList;
 
             if (InCar != null)
             {
@@ -481,9 +481,9 @@ namespace Lopez_Auto_Sales
             MakeBox.Text = car.Make;
             ModelBox.Text = car.Model;
 
-            if (Storage.SalesCars.Exists(c => c.VIN == VINBox.Text))
+            if (Storage.SalesCarsList.Exists(c => c.VIN == VINBox.Text))
             {
-                InCar = Storage.SalesCars.Find(c => c.VIN == VINBox.Text);
+                InCar = Storage.SalesCarsList.Find(c => c.VIN == VINBox.Text);
 
                 VINBox.Text = InCar.VIN;
                 MileageBox.Text = InCar.Mileage == null ? "Exempt" : InCar.Mileage.Value.ToString();

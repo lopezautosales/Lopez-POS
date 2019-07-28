@@ -44,7 +44,7 @@ namespace Lopez_Auto_Sales
             List<Person> people = new List<Person>();
 
             //Search in parallel
-            Parallel.ForEach(Storage.People, (Person person) =>
+            Parallel.ForEach(Storage.PeopleList, (Person person) =>
             {
                 if (!String.IsNullOrEmpty(nameQuery))
                     if (!person.Name.ToLower().Contains(nameQuery.ToLower()))

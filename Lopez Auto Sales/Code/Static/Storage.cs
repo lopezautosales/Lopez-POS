@@ -6,20 +6,55 @@ using System.Threading;
 
 namespace Lopez_Auto_Sales.Static
 {
+    /// <summary>
+    /// The storage class
+    /// </summary>
     internal static class Storage
     {
+        /// <summary>
+        /// The dataset
+        /// </summary>
         internal static LopezDataDataSet lopezData = new LopezDataDataSet();
-        private static PeopleTableTableAdapter peopleAdapter = new PeopleTableTableAdapter();
-        private static PaymentCarTableTableAdapter paymentCarAdapter = new PaymentCarTableTableAdapter();
-        private static SalesCarTableTableAdapter salesCarAdapter = new SalesCarTableTableAdapter();
-        private static PaymentTableTableAdapter paymentAdapter = new PaymentTableTableAdapter();
-        private static PaperInfoTableTableAdapter paperInfoAdapter = new PaperInfoTableTableAdapter();
-        private static RemovedPaymentTableTableAdapter removedPaymentAdapter = new RemovedPaymentTableTableAdapter();
-        private static SalesTableTableAdapter salesAdapter = new SalesTableTableAdapter();
-        internal static List<Person> People = new List<Person>();
-        internal static List<SalesCar> SalesCars = new List<SalesCar>();
-        internal static List<PaperInfo> Papers = new List<PaperInfo>();
-        public const string CONNECTION = "Data Source = (LocalDB)\\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\\LopezData.mdf;Integrated Security = True; Connect Timeout = 30; MultipleActiveResultSets=True ";
+        /// <summary>
+        /// The people adapter
+        /// </summary>
+        private static readonly PeopleTableTableAdapter peopleAdapter = new PeopleTableTableAdapter();
+        /// <summary>
+        /// The payment car adapter
+        /// </summary>
+        private static readonly PaymentCarTableTableAdapter paymentCarAdapter = new PaymentCarTableTableAdapter();
+        /// <summary>
+        /// The sales car adapter
+        /// </summary>
+        private static readonly SalesCarTableTableAdapter salesCarAdapter = new SalesCarTableTableAdapter();
+        /// <summary>
+        /// The payment adapter
+        /// </summary>
+        private static readonly PaymentTableTableAdapter paymentAdapter = new PaymentTableTableAdapter();
+        /// <summary>
+        /// The paper information adapter
+        /// </summary>
+        private static readonly PaperInfoTableTableAdapter paperInfoAdapter = new PaperInfoTableTableAdapter();
+        /// <summary>
+        /// The removed payment adapter
+        /// </summary>
+        private static readonly RemovedPaymentTableTableAdapter removedPaymentAdapter = new RemovedPaymentTableTableAdapter();
+        /// <summary>
+        /// The sales adapter
+        /// </summary>
+        private static readonly SalesTableTableAdapter salesAdapter = new SalesTableTableAdapter();
+        /// <summary>
+        /// The people list
+        /// </summary>
+        internal static List<Person> PeopleList = new List<Person>();
+        /// <summary>
+        /// The sales cars list
+        /// </summary>
+        internal static List<SalesCar> SalesCarsList = new List<SalesCar>();
+        /// <summary>
+        /// The papers list
+        /// </summary>
+        internal static List<PaperInfo> PapersList = new List<PaperInfo>();
 
         /// <summary>Initializes this instance.</summary>
         internal static void Init()
@@ -33,12 +68,12 @@ namespace Lopez_Auto_Sales.Static
 
             Thread thread = new Thread(new ThreadStart(() =>
             {
-                SalesCars.Populate();
-                Papers.Populate();
+                SalesCarsList.Populate();
+                PapersList.Populate();
             }));
             thread.Start();
 
-            People.Populate();
+            PeopleList.Populate();
             thread.Join();
         }
 
@@ -132,191 +167,188 @@ namespace Lopez_Auto_Sales.Static
 
         #endregion POPULATE
 
-        #region PAPERINFO
-
-        /// <summary>Adds the paper information.</summary>
-        /// <param name="paperInfo">The paper information.</param>
-        internal static void AddPaperInfo(PaperInfo paperInfo)
+        internal static class Papers
         {
-            if (paperInfo.Trade == null)
+            /// <summary>Adds the paper information.</summary>
+            /// <param name="paperInfo">The paper information.</param>
+            internal static void AddPaperInfo(PaperInfo paperInfo)
             {
-                paperInfoAdapter.Insert(paperInfo.Date, paperInfo.Buyer.Name, paperInfo.CoBuyer, paperInfo.Buyer.Full_Address, paperInfo.Buyer.Phone, paperInfo.Car.VIN, paperInfo.Car.Year,
-                    paperInfo.Car.Make, paperInfo.Car.Model, paperInfo.Car.Color, paperInfo.Car.Mileage, null, null, null, null, null, null, null, paperInfo.Car.Value, paperInfo.Down,
-                    paperInfo.Tag, paperInfo.Lien, paperInfo.OutOfState, paperInfo.Tax, paperInfo.Warranty, paperInfo.AveragePayment);
+                if (paperInfo.Trade == null)
+                {
+                    paperInfoAdapter.Insert(paperInfo.Date, paperInfo.Buyer.Name, paperInfo.CoBuyer, paperInfo.Buyer.Full_Address, paperInfo.Buyer.Phone, paperInfo.Car.VIN, paperInfo.Car.Year,
+                        paperInfo.Car.Make, paperInfo.Car.Model, paperInfo.Car.Color, paperInfo.Car.Mileage, null, null, null, null, null, null, null, paperInfo.Car.Value, paperInfo.Down,
+                        paperInfo.Tag, paperInfo.Lien, paperInfo.OutOfState, paperInfo.Tax, paperInfo.Warranty, paperInfo.AveragePayment);
+                }
+                else
+                {
+                    paperInfoAdapter.Insert(paperInfo.Date, paperInfo.Buyer.Name, paperInfo.CoBuyer, paperInfo.Buyer.Full_Address, paperInfo.Buyer.Phone, paperInfo.Car.VIN, paperInfo.Car.Year,
+                        paperInfo.Car.Make, paperInfo.Car.Model, paperInfo.Car.Color, paperInfo.Car.Mileage, paperInfo.Trade.VIN, paperInfo.Trade.Year,
+                        paperInfo.Trade.Make, paperInfo.Trade.Model, paperInfo.Trade.Color, paperInfo.Trade.Mileage, paperInfo.Trade.Value, paperInfo.Car.Value, paperInfo.Down,
+                        paperInfo.Tag, paperInfo.Lien, paperInfo.OutOfState, paperInfo.Tax, paperInfo.Warranty, paperInfo.AveragePayment);
+                }
             }
-            else
+        }
+
+        internal static class People
+        {
+            /// <summary>Adds the person.</summary>
+            /// <param name="name">The name.</param>
+            /// <param name="phone">The phone.</param>
+            /// <param name="full_address">The full address.</param>
+            /// <returns>
+            ///   <para>The table ID</para>
+            /// </returns>
+            internal static int AddPerson(string name, string phone, string full_address)
             {
-                paperInfoAdapter.Insert(paperInfo.Date, paperInfo.Buyer.Name, paperInfo.CoBuyer, paperInfo.Buyer.Full_Address, paperInfo.Buyer.Phone, paperInfo.Car.VIN, paperInfo.Car.Year,
-                    paperInfo.Car.Make, paperInfo.Car.Model, paperInfo.Car.Color, paperInfo.Car.Mileage, paperInfo.Trade.VIN, paperInfo.Trade.Year,
-                    paperInfo.Trade.Make, paperInfo.Trade.Model, paperInfo.Trade.Color, paperInfo.Trade.Mileage, paperInfo.Trade.Value, paperInfo.Car.Value, paperInfo.Down,
-                    paperInfo.Tag, paperInfo.Lien, paperInfo.OutOfState, paperInfo.Tax, paperInfo.Warranty, paperInfo.AveragePayment);
+                Logger.People.AddPerson(name, phone, full_address);
+                return (int)peopleAdapter.InsertQuery(name, full_address, phone);
             }
-        }
 
-        #endregion PAPERINFO
-
-        #region PERSON
-
-        /// <summary>Adds the person.</summary>
-        /// <param name="name">The name.</param>
-        /// <param name="phone">The phone.</param>
-        /// <param name="full_Address">The full address.</param>
-        /// <returns>
-        ///   <para>The table ID</para>
-        /// </returns>
-        internal static int AddPerson(string name, string phone, string full_Address)
-        {
-            return (int)peopleAdapter.InsertQuery(name, full_Address, phone);
-        }
-
-        /// <summary>Updates the person.</summary>
-        /// <param name="person">The person.</param>
-        /// <param name="newPerson">The new person.</param>
-        internal static void UpdatePerson(Person person, Person newPerson)
-        {
-            People[People.IndexOf(person)] = newPerson;
-            peopleAdapter.Update(newPerson.Name, newPerson.Full_Address, newPerson.Phone, person.PersonID, person.Name, person.Full_Address, person.Phone);
-        }
-
-        /// <summary>Removes the person.</summary>
-        /// <param name="person">The person.</param>
-        internal static void RemovePerson(Person person)
-        {
-            People.Remove(person);
-            peopleAdapter.Delete(person.PersonID, person.Name, person.Full_Address, person.Phone);
-        }
-
-        #endregion PERSON
-
-        #region SALESCARS
-
-        /// <summary>Edits the sales car.</summary>
-        /// <param name="car">The car.</param>
-        /// <param name="newCar">The new car.</param>
-        internal static void EditSalesCar(SalesCar car, SalesCar newCar)
-        {
-            salesCarAdapter.Update(newCar.VIN, newCar.Year, newCar.Make, newCar.Model, newCar.Color, newCar.Mileage, newCar.Price,
-                newCar.LowestPrice, newCar.ListDate, newCar.BoughtPrice, newCar.ExtraKey, newCar.Salvage, newCar.ByOwner,
-                car.VIN, car.Year, car.Make, car.Model, car.Color, car.Mileage, car.Price,
-                car.LowestPrice, car.ListDate, car.BoughtPrice, car.ExtraKey, car.Salvage, car.ByOwner);
-            SalesCars[SalesCars.IndexOf(car)] = newCar;
-        }
-
-        /// <summary>Removes the sales car.</summary>
-        /// <param name="car">The car.</param>
-        internal static void RemoveSalesCar(SalesCar car)
-        {
-            Logger.LogInventory(false, car);
-            salesCarAdapter.Delete(car.VIN, car.Year, car.Make, car.Model, car.Color, car.Mileage, car.Price, car.LowestPrice, car.ListDate, car.BoughtPrice, car.ExtraKey, car.Salvage, car.ByOwner);
-            SalesCars.Remove(car);
-        }
-
-        /// <summary>Adds the sales car.</summary>
-        /// <param name="car">The car.</param>
-        internal static void AddSalesCar(SalesCar car)
-        {
-            Logger.LogInventory(true, car);
-            salesCarAdapter.Insert(car.VIN, car.Year, car.Make, car.Model, car.Color, car.Mileage, car.Price, car.LowestPrice, car.ListDate, car.BoughtPrice, car.ExtraKey, car.Salvage, car.ByOwner);
-            SalesCars.Add(car);
-        }
-
-        #endregion SALESCARS
-
-        #region PAYMENTS
-
-        /// <summary>Removes the payment.</summary>
-        /// <param name="payment">The payment.</param>
-        /// <param name="reason">The reason.</param>
-        internal static void RemovePayment(string person, string car, Payment payment, string reason)
-        {
-            Logger.LogRemovePayment(person, car, payment, reason);
-            paymentAdapter.Delete(payment.PaymentID, payment.CarID, payment.Date, payment.Amount, payment.IsDownPayment);
-            removedPaymentAdapter.Insert(payment.CarID, payment.Date, payment.Amount, payment.IsDownPayment, reason);
-        }
-
-        /// <summary>Edits the payment.</summary>
-        /// <param name="payment">The payment.</param>
-        /// <param name="date">The date.</param>
-        /// <param name="amount">The amount.</param>
-        /// <param name="reason">The reason.</param>
-        internal static void EditPayment(string person, string car, Payment payment, DateTime date, decimal amount, string reason)
-        {
-            Logger.LogEditPayment(person, car, payment, date, amount, reason);
-            paymentAdapter.Update(payment.CarID, date, amount, payment.IsDownPayment, payment.PaymentID, payment.CarID, payment.Date, payment.Amount, payment.IsDownPayment);
-        }
-
-        /// <summary>Adds the payment.</summary>
-        /// <param name="carID">The car identifier.</param>
-        /// <param name="person">The person.</param>
-        /// <param name="car">The car.</param>
-        /// <param name="date">The date.</param>
-        /// <param name="amount">The amount.</param>
-        /// <param name="down">if set to <c>true</c> [down].</param>
-        /// <returns>
-        ///   <para>The table ID</para>
-        /// </returns>
-        internal static int AddPayment(int carID, string person, string car, DateTime date, decimal amount, bool down)
-        {
-            Logger.LogAddPayment(person, car, amount, down);
-            return (int)paymentAdapter.InsertQuery(carID, date, amount, down);
-        }
-
-        #endregion PAYMENTS
-
-        #region PAYMENTCAR
-
-        /// <summary>Adds the payment car.</summary>
-        /// <param name="personID">The person identifier.</param>
-        /// <param name="person">The person.</param>
-        /// <param name="year">The year.</param>
-        /// <param name="make">The make.</param>
-        /// <param name="model">The model.</param>
-        /// <param name="mileage">The mileage.</param>
-        /// <param name="VIN">The vin.</param>
-        /// <param name="due">The due.</param>
-        /// <param name="average">The average payment.</param>
-        /// <param name="now">The current datetime.</param>
-        /// <param name="color">The color.</param>
-        /// <returns>
-        ///   <para>The table ID</para>
-        /// </returns>
-        internal static int AddPaymentCar(int personID, int year, string make, string model, int? mileage, string VIN, decimal due, decimal average, DateTime now, string color)
-        {
-            return (int)paymentCarAdapter.InsertQuery(personID, year, make, model, VIN, due, color, average, now, mileage);
-        }
-
-        /// <summary>Removes the payment car.</summary>
-        /// <param name="person">The person.</param>
-        /// <param name="car">The car.</param>
-        internal static void RemovePaymentCar(Person person, PaymentCar car)
-        {
-            People[People.IndexOf(person)].Cars.Remove(car);
-            foreach (Payment p in car.Payments)
+            /// <summary>Updates the person.</summary>
+            /// <param name="person">The person.</param>
+            /// <param name="newPerson">The new person.</param>
+            internal static void UpdatePerson(Person person, Person newPerson)
             {
-                paymentAdapter.Delete(p.PaymentID, car.CarID, p.Date, p.Amount, p.IsDownPayment);
+                Logger.People.UpdatePerson(person, newPerson);
+                PeopleList[PeopleList.IndexOf(person)] = newPerson;
+                peopleAdapter.Update(newPerson.Name, newPerson.Full_Address, newPerson.Phone, person.PersonID, person.Name, person.Full_Address, person.Phone);
             }
-            paymentCarAdapter.Delete(car.CarID, car.PersonID, car.Year, car.Make, car.Model, car.VIN, car.Due, car.Color, car.Expected, car.BoughtDate, car.Mileage);
+
+            /// <summary>Removes the person.</summary>
+            /// <param name="person">The person.</param>
+            internal static void RemovePerson(Person person)
+            {
+                PeopleList.Remove(person);
+                peopleAdapter.Delete(person.PersonID, person.Name, person.Full_Address, person.Phone);
+            }
         }
 
-        #endregion PAYMENTCAR
-
-        #region Sales
-
-        /// <summary>
-        /// Adds the sale to storage.
-        /// </summary>
-        /// <param name="person">The name.</param>
-        /// <param name="car">The car.</param>
-        /// <param name="boughtPrice">The bought price.</param>
-        /// <param name="listDate">The list date.</param>
-        /// <param name="boughtDate">The bought date.</param>
-        /// <param name="salvage">if set to <c>true</c> [salvage].</param>
-        internal static void AddSales(string person, Car car, decimal boughtPrice, DateTime listDate, DateTime boughtDate, bool salvage)
+        internal static class SalesCars
         {
-            Logger.LogSale(person, car);
-            salesAdapter.Insert(person, car.VIN, car.Year, car.Make, car.Model, car.Color, car.Mileage, car.Value, boughtPrice, listDate, boughtDate, salvage);
+            /// <summary>Edits the sales car.</summary>
+            /// <param name="car">The car.</param>
+            /// <param name="newCar">The new car.</param>
+            internal static void EditSalesCar(SalesCar car, SalesCar newCar)
+            {
+                salesCarAdapter.Update(newCar.VIN, newCar.Year, newCar.Make, newCar.Model, newCar.Color, newCar.Mileage, newCar.Price,
+                    newCar.LowestPrice, newCar.ListDate, newCar.BoughtPrice, newCar.ExtraKey, newCar.Salvage, newCar.ByOwner,
+                    car.VIN, car.Year, car.Make, car.Model, car.Color, car.Mileage, car.Price,
+                    car.LowestPrice, car.ListDate, car.BoughtPrice, car.ExtraKey, car.Salvage, car.ByOwner);
+                SalesCarsList[SalesCarsList.IndexOf(car)] = newCar;
+            }
+
+            /// <summary>Removes the sales car.</summary>
+            /// <param name="car">The car.</param>
+            internal static void RemoveSalesCar(SalesCar car)
+            {
+                Logger.Inventory.RemoveInventory(car);
+                salesCarAdapter.Delete(car.VIN, car.Year, car.Make, car.Model, car.Color, car.Mileage, car.Price, car.LowestPrice, car.ListDate, car.BoughtPrice, car.ExtraKey, car.Salvage, car.ByOwner);
+                SalesCarsList.Remove(car);
+            }
+
+            /// <summary>Adds the sales car.</summary>
+            /// <param name="car">The car.</param>
+            internal static void AddSalesCar(SalesCar car)
+            {
+                Logger.Inventory.AddInventory(car);
+                salesCarAdapter.Insert(car.VIN, car.Year, car.Make, car.Model, car.Color, car.Mileage, car.Price, car.LowestPrice, car.ListDate, car.BoughtPrice, car.ExtraKey, car.Salvage, car.ByOwner);
+                SalesCarsList.Add(car);
+            }
         }
 
-        #endregion Sales
+        internal static class Payments
+        {
+            /// <summary>Removes the payment.</summary>
+            /// <param name="payment">The payment.</param>
+            /// <param name="reason">The reason.</param>
+            internal static void RemovePayment(string person, string car, Payment payment, string reason)
+            {
+                Logger.Payments.RemovePayment(person, car, payment, reason);
+                paymentAdapter.Delete(payment.PaymentID, payment.CarID, payment.Date, payment.Amount, payment.IsDownPayment);
+                removedPaymentAdapter.Insert(payment.CarID, payment.Date, payment.Amount, payment.IsDownPayment, reason);
+            }
+
+            /// <summary>Edits the payment.</summary>
+            /// <param name="payment">The payment.</param>
+            /// <param name="date">The date.</param>
+            /// <param name="amount">The amount.</param>
+            /// <param name="reason">The reason.</param>
+            internal static void EditPayment(string person, string car, Payment payment, DateTime date, decimal amount, string reason)
+            {
+                Logger.Payments.EditPayment(person, car, payment, date, amount, reason);
+                paymentAdapter.Update(payment.CarID, date, amount, payment.IsDownPayment, payment.PaymentID, payment.CarID, payment.Date, payment.Amount, payment.IsDownPayment);
+            }
+
+            /// <summary>Adds the payment.</summary>
+            /// <param name="carID">The car identifier.</param>
+            /// <param name="person">The person.</param>
+            /// <param name="car">The car.</param>
+            /// <param name="date">The date.</param>
+            /// <param name="amount">The amount.</param>
+            /// <param name="down">if set to <c>true</c> [down].</param>
+            /// <returns>
+            ///   <para>The table ID</para>
+            /// </returns>
+            internal static int AddPayment(int carID, string person, string car, DateTime date, decimal amount, bool down)
+            {
+                Logger.Payments.AddPayment(person, car, amount, down);
+                return (int)paymentAdapter.InsertQuery(carID, date, amount, down);
+            }
+        }
+
+        internal static class PaymentCars
+        {
+            /// <summary>Adds the payment car.</summary>
+            /// <param name="personID">The person identifier.</param>
+            /// <param name="person">The person.</param>
+            /// <param name="year">The year.</param>
+            /// <param name="make">The make.</param>
+            /// <param name="model">The model.</param>
+            /// <param name="mileage">The mileage.</param>
+            /// <param name="VIN">The vin.</param>
+            /// <param name="due">The due.</param>
+            /// <param name="average">The average payment.</param>
+            /// <param name="now">The current datetime.</param>
+            /// <param name="color">The color.</param>
+            /// <returns>
+            ///   <para>The table ID</para>
+            /// </returns>
+            internal static int AddPaymentCar(int personID, int year, string make, string model, int? mileage, string VIN, decimal due, decimal average, DateTime now, string color)
+            {
+                return (int)paymentCarAdapter.InsertQuery(personID, year, make, model, VIN, due, color, average, now, mileage);
+            }
+
+            /// <summary>Removes the payment car.</summary>
+            /// <param name="person">The person.</param>
+            /// <param name="car">The car.</param>
+            internal static void RemovePaymentCar(Person person, PaymentCar car)
+            {
+                PeopleList[PeopleList.IndexOf(person)].Cars.Remove(car);
+                foreach (Payment p in car.Payments)
+                {
+                    paymentAdapter.Delete(p.PaymentID, car.CarID, p.Date, p.Amount, p.IsDownPayment);
+                }
+                paymentCarAdapter.Delete(car.CarID, car.PersonID, car.Year, car.Make, car.Model, car.VIN, car.Due, car.Color, car.Expected, car.BoughtDate, car.Mileage);
+            }
+        }
+
+
+        internal static class Sales
+        {
+            /// <summary>
+            /// Adds the sale to storage.
+            /// </summary>
+            /// <param name="person">The name.</param>
+            /// <param name="car">The car.</param>
+            /// <param name="boughtPrice">The bought price.</param>
+            /// <param name="listDate">The list date.</param>
+            /// <param name="boughtDate">The bought date.</param>
+            /// <param name="salvage">if set to <c>true</c> [salvage].</param>
+            internal static void AddSales(string person, Car car, decimal boughtPrice, DateTime listDate, DateTime boughtDate, bool salvage)
+            {
+                Logger.Sales.AddSale(person, car);
+                salesAdapter.Insert(person, car.VIN, car.Year, car.Make, car.Model, car.Color, car.Mileage, car.Value, boughtPrice, listDate, boughtDate, salvage);
+            }
+        }
     }
 }

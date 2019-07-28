@@ -113,7 +113,7 @@ namespace Lopez_Auto_Sales
         /// <param name="down">if set to <c>true</c> [down].</param>
         public void AddPayment(DateTime date, decimal amount, bool down)
         {
-            int paymentID = Storage.AddPayment(CarID, Person, this.Name, date, amount, false);
+            int paymentID = Storage.Payments.AddPayment(CarID, Person, this.Name, date, amount, false);
             Payments.Add(new Payment(paymentID, CarID, date, amount, down));
         }
 
@@ -125,7 +125,7 @@ namespace Lopez_Auto_Sales
         /// <param name="reason">The reason.</param>
         public void EditPayment(Payment payment, Payment newPayment, string reason)
         {
-            Storage.EditPayment(Person, this.Name, payment, newPayment.Date, newPayment.Amount, reason);
+            Storage.Payments.EditPayment(Person, this.Name, payment, newPayment.Date, newPayment.Amount, reason);
             Payments[Payments.IndexOf(payment)] = newPayment;
         }
 
@@ -136,7 +136,7 @@ namespace Lopez_Auto_Sales
         /// <param name="reason">The reason.</param>
         public void RemovePayment(Payment payment, string reason)
         {
-            Storage.RemovePayment(Person, this.Name, payment, reason);
+            Storage.Payments.RemovePayment(Person, this.Name, payment, reason);
             Payments.Remove(payment);
         }
 
