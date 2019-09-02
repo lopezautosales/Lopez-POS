@@ -11,6 +11,6 @@
         <Button x:Name="ExpiredContractsButton" Content="Expired Contracts" HorizontalAlignment="Left" Margin="10,63,0,0" VerticalAlignment="Top" Width="305" Height="27" AutomationProperties.HelpText="See vehicles with expired contracts." Click="ExpiredContractsButton_Click" />
         <Button x:Name="SalesButton" Content="Sales" HorizontalAlignment="Left" Margin="10,95,0,0" VerticalAlignment="Top" Width="305" Height="27" AutomationProperties.HelpText="See car sales information." Click="SalesButton_Click" />
         <TextBlock HorizontalAlignment="Left" Margin="98,10,0,0" TextWrapping="Wrap" Text="Select an Information Set" VerticalAlignment="Top" />
-        <Button x:Name="JsonButton" Content="Json" HorizontalAlignment="Left" Margin="10,127,0,0" VerticalAlignment="Top" Width="305" Height="27" AutomationProperties.HelpText="Press to generate JSON files" Click="JsonButton_Click" />
+        <Button x:Name="JsonButton" Content="Update Website" HorizontalAlignment="Left" Margin="10,127,0,0" VerticalAlignment="Top" Width="305" Height="27" AutomationProperties.HelpText="Press to generate JSON files" Click="JsonButton_Click" />
     </Grid>
 </Window>

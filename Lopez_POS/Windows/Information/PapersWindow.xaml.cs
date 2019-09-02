@@ -1,5 +1,8 @@
 ﻿using Lopez_POS.Static;
+using System.Data;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace Lopez_POS
 {
@@ -10,11 +13,14 @@ namespace Lopez_POS
     /// <seealso cref="System.Windows.Markup.IComponentConnector" />
     public partial class PapersWindow : Window
     {
+        private string Buyer { get; set; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="PapersWindow"/> class.
         /// </summary>
-        public PapersWindow()
+        public PapersWindow(string name = "")
         {
+            Buyer = name;
             InitializeComponent();
         }
 
@@ -56,6 +62,21 @@ namespace Lopez_POS
         {
             PaperInfoGrid.ItemsSource = null;
             PaperInfoGrid.ItemsSource = Storage.PapersList;
+
+            SearchBox.Text = Buyer;
+        }
+
+        private void SearchBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            Search(SearchBox.Text);
+        }
+
+        private void Search(string query)
+        {
+            PaperInfoGrid.ItemsSource = Storage.PapersList.FindAll(p => p.Buyer.Name.ToLower().Contains(query.ToLower()));
+
+            if (PaperInfoGrid.Items.Count > 0)
+                PaperInfoGrid.SelectedIndex = 0;
         }
     }
 }

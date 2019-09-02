@@ -9,6 +9,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading;
 
 namespace Lopez_POS.Web
 {
@@ -259,59 +260,63 @@ namespace Lopez_POS.Web
         /// </summary>
         public static void CheckForUpdates()
         {
-            DeleteImages();
-            List<JSONCar> cars = new List<JSONCar>();
-
-            if (File.Exists(Paths.JSON + Paths.JSON_FILE))
+            Thread thread = new Thread(new ThreadStart(() =>
             {
-                JSONFile jsonFile = JsonConvert.DeserializeObject<JSONFile>(File.ReadAllText(Paths.JSON + Paths.JSON_FILE), SerializerSettings);
+                DeleteImages();
+                List<JSONCar> cars = new List<JSONCar>();
 
-                //set car info according to previously created file
-                if (jsonFile != null)
+                if (File.Exists(Paths.JSON + Paths.JSON_FILE))
                 {
-                    cars = new List<JSONCar>(jsonFile.Cars);
-                    //check for any vehicles that have been removed
-                    for (int i = cars.Count - 1; i >= 0; i--)
-                    {
-                        JSONCar car = cars[i];
-                        if (Storage.SalesCarsList.Any(match => match.VIN == car.VIN))
-                        {
-                            SalesCar salesCar = Storage.SalesCarsList.Find(match => match.VIN == car.VIN);
-                            cars[i].Update(salesCar);
-                        }
-                        else
-                        {
-                            cars.Remove(car);
+                    JSONFile jsonFile = JsonConvert.DeserializeObject<JSONFile>(File.ReadAllText(Paths.JSON + Paths.JSON_FILE), SerializerSettings);
 
-                            if (File.Exists(Paths.INPUT + car.VIN + Paths.IMAGE_TYPE))
-                                File.Move(Paths.INPUT + car.VIN + Paths.IMAGE_TYPE, Paths.LOGS + car.VIN + Paths.IMAGE_TYPE);
+                    //set car info according to previously created file
+                    if (jsonFile != null)
+                    {
+                        cars = new List<JSONCar>(jsonFile.Cars);
+                        //check for any vehicles that have been removed
+                        for (int i = cars.Count - 1; i >= 0; i--)
+                        {
+                            JSONCar car = cars[i];
+                            if (Storage.SalesCarsList.Any(match => match.VIN == car.VIN))
+                            {
+                                SalesCar salesCar = Storage.SalesCarsList.Find(match => match.VIN == car.VIN);
+                                cars[i].Update(salesCar);
+                            }
+                            else
+                            {
+                                cars.Remove(car);
+
+                                if (File.Exists(Paths.INPUT + car.VIN + Paths.IMAGE_TYPE))
+                                    File.Move(Paths.INPUT + car.VIN + Paths.IMAGE_TYPE, Paths.LOGS + car.VIN + Paths.IMAGE_TYPE);
+                            }
                         }
                     }
                 }
-            }
 
-            foreach (SalesCar car in Storage.SalesCarsList)
-            {
-                string path = Paths.INPUT + car.VIN + Paths.IMAGE_TYPE;
-                if (!File.Exists(path))
-                    continue;
+                foreach (SalesCar car in Storage.SalesCarsList)
+                {
+                    string path = Paths.INPUT + car.VIN + Paths.IMAGE_TYPE;
+                    if (!File.Exists(path))
+                        continue;
 
-                ProcessImage(path, car.VIN);
+                    ProcessImage(path, car.VIN);
 
-                //has already been checked
-                if (cars.Any(match => match.VIN == car.VIN))
-                    continue;
+                    //has already been checked
+                    if (cars.Any(match => match.VIN == car.VIN))
+                        continue;
 
-                JSONCar jsonCar = new JSONCar(car);
-                if (car.ByOwner)
-                    jsonCar.Extras.Add(new JSONExtra("Note", "For Sale by Owner"));
-                jsonCar.ProcessAPI();
-                cars.Add(jsonCar);
-            }
-            JSONFile output = new JSONFile(cars);
-            File.WriteAllText(Paths.JSON + Paths.JSON_FILE, JsonConvert.SerializeObject(output, Formatting.Indented, SerializerSettings));
-            GitManager gitManager = new GitManager();
-            gitManager.TryPushChanges();
+                    JSONCar jsonCar = new JSONCar(car);
+                    if (car.ByOwner)
+                        jsonCar.Extras.Add(new JSONExtra("Note", "For Sale by Owner"));
+                    jsonCar.ProcessAPI();
+                    cars.Add(jsonCar);
+                }
+                JSONFile output = new JSONFile(cars);
+                File.WriteAllText(Paths.JSON + Paths.JSON_FILE, JsonConvert.SerializeObject(output, Formatting.Indented, SerializerSettings));
+                GitManager gitManager = new GitManager();
+                gitManager.TryPushChanges();
+            }));
+            thread.Start();
         }
     }
 }

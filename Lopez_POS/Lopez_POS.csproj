@@ -125,6 +125,9 @@
     <Compile Include="Code\JSON\JSONFile.cs" />
     <Compile Include="Code\JSON\JSONClass.cs" />
     <Compile Include="Code\Web\WebManager.cs" />
+    <Compile Include="Windows\Information\SalesWindow.xaml.cs">
+      <DependentUpon>SalesWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Windows\SalesCars\AddSalesCar.xaml.cs">
       <DependentUpon>AddSalesCar.xaml</DependentUpon>
     </Compile>
@@ -139,9 +142,6 @@
     </Compile>
     <Compile Include="Windows\Information\ExpiredContractsWindow.xaml.cs">
       <DependentUpon>ExpiredContractsWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Windows\Accounts\ExtraPapers.xaml.cs">
-      <DependentUpon>ExtraPapers.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\Information\InformationWindow.xaml.cs">
       <DependentUpon>InformationWindow.xaml</DependentUpon>
@@ -178,6 +178,10 @@
       <DependentUpon>SellCarWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Code\Static\Storage.cs" />
+    <Page Include="Windows\Information\SalesWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\SalesCars\AddSalesCar.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -195,10 +199,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Windows\Information\ExpiredContractsWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Windows\Accounts\ExtraPapers.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

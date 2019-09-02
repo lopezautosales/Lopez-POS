@@ -1,4 +1,5 @@
 ﻿using Lopez_POS.Web;
+using Lopez_POS.Windows.Information;
 using System.Windows;
 
 namespace Lopez_POS
@@ -49,7 +50,9 @@ namespace Lopez_POS
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void SalesButton_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Not Implemented Yet: Gathering Data");
+            SalesWindow salesWindow = new SalesWindow();
+            salesWindow.Show();
+            this.Close();
         }
 
         /// <summary>
@@ -60,7 +63,7 @@ namespace Lopez_POS
         private void JsonButton_Click(object sender, RoutedEventArgs e)
         {
             WebManager.CheckForUpdates();
-            MessageBox.Show("Updated Cars");
+            MessageBox.Show("Updated Website Cars");
         }
     }
 }

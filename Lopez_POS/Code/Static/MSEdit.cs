@@ -211,7 +211,7 @@ namespace Lopez_POS.Static
                                 break;
                         }
                 }
-                document.PrintOut(true, ManualDuplexPrint: false);
+                document.PrintOut(true);
                 document.Close(false);
                 application.Quit();
             }));
@@ -355,7 +355,7 @@ namespace Lopez_POS.Static
                                 break;
                         }
                 }
-                document.PrintOut(true, ManualDuplexPrint: false);
+                document.PrintOut(true);
                 document.Close(false);
                 application.Quit();
             }));
@@ -469,7 +469,7 @@ namespace Lopez_POS.Static
                                 break;
                         }
                 }
-                document.PrintOut(true, ManualDuplexPrint: true);
+                document.PrintOut(true);
                 document.Close(false);
                 application.Quit();
             }));
@@ -536,7 +536,7 @@ namespace Lopez_POS.Static
                                 break;
                         }
                 }
-                document.PrintOut(true, ManualDuplexPrint: false);
+                document.PrintOut(true);
                 document.Close(false);
                 application.Quit();
             }));
@@ -646,9 +646,9 @@ namespace Lopez_POS.Static
 
                 if (paperInfo.Trade != null)
                 {
-                    ws.Cells[1 + i, "H"] = paperInfo.Trade.ToString();
-                    ws.Cells[1 + i, "I"] = paperInfo.Trade.Value;
-                    ws.Cells[1 + i, "J"] = paperInfo.Trade.VIN;
+                    ws.Cells[i, "H"] = paperInfo.Trade.ToString();
+                    ws.Cells[i, "I"] = paperInfo.Trade.Value;
+                    ws.Cells[i, "J"] = paperInfo.Trade.VIN;
                 }
                 wb.Save();
                 wb.Close();

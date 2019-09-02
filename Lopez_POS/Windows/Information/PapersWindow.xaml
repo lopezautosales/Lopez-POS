@@ -17,12 +17,14 @@
                 <DataGridTextColumn Header="Color" Binding="{Binding Car.Color}" />
             </DataGrid.Columns>
         </DataGrid>
-        <CheckBox x:Name="ContractCheckBox" Content="Contract" HorizontalAlignment="Left" Margin="23,327,0,0" VerticalAlignment="Top" />
         <TextBlock HorizontalAlignment="Left" Margin="71,295,0,0" TextWrapping="Wrap" Text="Select the Papers to Print" VerticalAlignment="Top" />
+        <CheckBox x:Name="ContractCheckBox" Content="Contract" HorizontalAlignment="Left" Margin="23,327,0,0" VerticalAlignment="Top" />
         <CheckBox x:Name="WarrantyCheckBox" Content="Warranty" HorizontalAlignment="Left" Margin="23,348,0,0" VerticalAlignment="Top" />
         <CheckBox x:Name="TransferCheckBox" Content="Transfer Agreement" HorizontalAlignment="Left" Margin="23,368,0,0" VerticalAlignment="Top" />
         <CheckBox x:Name="LegalCheckBox" Content="Legal" HorizontalAlignment="Left" Margin="23,388,0,0" VerticalAlignment="Top" />
         <CheckBox x:Name="LienCheckBox" Content="Lien Release" HorizontalAlignment="Left" Margin="23,408,0,0" VerticalAlignment="Top" />
         <Button x:Name="PrintButton" Content="Print Papers" HorizontalAlignment="Left" Margin="424,404,0,0" VerticalAlignment="Top" Width="116" Click="PrintButton_Click" />
+        <Label Content="Search:" HorizontalAlignment="Left" Margin="268,293,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="SearchBox" HorizontalAlignment="Left" Height="23" Margin="321,294,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="219" TextChanged="SearchBox_TextChanged"/>
     </Grid>
 </Window>

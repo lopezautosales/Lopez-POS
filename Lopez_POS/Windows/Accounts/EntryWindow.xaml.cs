@@ -55,6 +55,12 @@ namespace Lopez_POS
                 PaymentButton.Content = "+ Add Payment";
         }
 
+        private void RefreshPayments()
+        {
+            PaymentsGrid.ItemsSource = null;
+            PaymentsGrid.ItemsSource = Car.Payments;
+        }
+
         /// <summary>
         /// Handles the Loaded event of the EntryWindow control.
         /// </summary>
@@ -62,9 +68,8 @@ namespace Lopez_POS
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void EntryWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            PaymentsGrid.ItemsSource = null;
-            PaymentsGrid.ItemsSource = Car.Payments;
             UpdateInfo();
+            RefreshPayments();
         }
 
         /// <summary>
@@ -99,10 +104,9 @@ namespace Lopez_POS
             }
 
             Car.AddPayment(DateTime.Now, paymentAmount, false);
-            UpdateInfo();
 
-            PaymentsGrid.ItemsSource = null;
-            PaymentsGrid.ItemsSource = Car.Payments;
+            UpdateInfo();
+            RefreshPayments();
 
             PrintReceipt();
             PaymentTextBox.Text = String.Empty;
@@ -142,10 +146,8 @@ namespace Lopez_POS
                 else
                     Car.EditPayment(payment, paymentEdit.Payment, paymentEdit.Reason);
 
-                PaymentsGrid.ItemsSource = null;
-                PaymentsGrid.ItemsSource = Car.Payments;
-
                 UpdateInfo();
+                RefreshPayments();
             }
         }
 
@@ -176,8 +178,8 @@ namespace Lopez_POS
         /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void PapersButton_Click(object sender, RoutedEventArgs e)
         {
-            ExtraPapers extraPapers = new ExtraPapers(Person.Name, Car.VIN);
-            extraPapers.Show();
+            PapersWindow papersWindow = new PapersWindow(Person.Name);
+            papersWindow.Show();
         }
     }
 }
