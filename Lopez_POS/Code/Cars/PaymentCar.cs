@@ -201,7 +201,7 @@ namespace Lopez_POS
         /// <returns>The due to date amount.</returns>
         public decimal GetDueToDate(DateTime date)
         {
-            DateTime firstDate = Down.Date;
+            DateTime firstDate = Down.Date.AddMonths(1);
             decimal due = 0;
 
             while (date > firstDate)
@@ -210,8 +210,8 @@ namespace Lopez_POS
                 firstDate = firstDate.Date.AddMonths(1);
             }
 
-            if (due > Due)
-                return Due;
+            if (due > Balance)
+                return Balance;
             return due;
         }
 

@@ -213,7 +213,7 @@ namespace Lopez_POS.Static
                 }
                 document.PrintOut(true);
                 document.Close(false);
-                application.Quit();
+                application.Quit(false);
             }));
             thread.Start();
         }
@@ -274,7 +274,7 @@ namespace Lopez_POS.Static
                 }
                 document.PrintOut(true, Pages: "1");
                 document.Close(false);
-                application.Quit();
+                application.Quit(false);
             }));
             thread.Start();
         }
@@ -357,7 +357,7 @@ namespace Lopez_POS.Static
                 }
                 document.PrintOut(true);
                 document.Close(false);
-                application.Quit();
+                application.Quit(false);
             }));
             thread.Start();
         }
@@ -471,7 +471,7 @@ namespace Lopez_POS.Static
                 }
                 document.PrintOut(true);
                 document.Close(false);
-                application.Quit();
+                application.Quit(false);
             }));
             thread.Start();
         }
@@ -538,7 +538,7 @@ namespace Lopez_POS.Static
                 }
                 document.PrintOut(true);
                 document.Close(false);
-                application.Quit();
+                application.Quit(false);
             }));
             thread.Start();
         }
