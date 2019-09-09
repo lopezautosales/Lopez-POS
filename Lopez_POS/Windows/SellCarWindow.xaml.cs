@@ -247,8 +247,8 @@ namespace Lopez_POS
         private void SellVehicle(Person buyer, Car car, Car trade, decimal down, int warranty, decimal boughtPrice, decimal average, decimal taxRate)
         {
             PaperInfo paperInfo = new PaperInfo(DateTime.Now, buyer, CoBuyerBox.Text.ToCapital(), car, trade, down, TagCheckBox.IsChecked.Value, LienCheckBox.IsChecked.Value, OutOfStateCheckBox.IsChecked.Value, taxRate, warranty, average);
-            MSEdit.PrintPapers(paperInfo, Balance != 0);
             Storage.Papers.AddPaperInfo(paperInfo);
+            MSEdit.PrintPapers(paperInfo, Balance != 0);
 
             if (Balance != 0)
                 AddPaymentCar(buyer, car, down, average);

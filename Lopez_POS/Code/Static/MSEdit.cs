@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
-using System.Threading;
 using System.Windows;
+using System.Threading;
 using excel = Microsoft.Office.Interop.Excel;
 using word = Microsoft.Office.Interop.Word;
 
@@ -211,7 +211,7 @@ namespace Lopez_POS.Static
                                 break;
                         }
                 }
-                document.PrintOut(true);
+                document.PrintOut(false);
                 document.Close(false);
                 application.Quit(false);
             }));
@@ -272,7 +272,7 @@ namespace Lopez_POS.Static
                                 break;
                         }
                 }
-                document.PrintOut(true, Pages: "1");
+                document.PrintOut(false, Pages: "1");
                 document.Close(false);
                 application.Quit(false);
             }));
@@ -355,7 +355,7 @@ namespace Lopez_POS.Static
                                 break;
                         }
                 }
-                document.PrintOut(true);
+                document.PrintOut(false);
                 document.Close(false);
                 application.Quit(false);
             }));
@@ -469,7 +469,7 @@ namespace Lopez_POS.Static
                                 break;
                         }
                 }
-                document.PrintOut(true);
+                document.PrintOut(false);
                 document.Close(false);
                 application.Quit(false);
             }));
@@ -536,7 +536,7 @@ namespace Lopez_POS.Static
                                 break;
                         }
                 }
-                document.PrintOut(true);
+                document.PrintOut(false);
                 document.Close(false);
                 application.Quit(false);
             }));
