@@ -295,7 +295,7 @@ namespace Lopez_POS
 
             //Add to storage
             if (exists)
-                Storage.PeopleList[Storage.PeopleList.IndexOf(person)].Cars.Add(paymentCar);
+                Storage.PeopleList.Find(p=> p.Name == buyer.Name).Cars.Add(paymentCar);
             else
                 Storage.PeopleList.Add(new Person(personID, buyer.Name, buyer.Phone, buyer.Full_Address, new List<PaymentCar>() { paymentCar }));
 
